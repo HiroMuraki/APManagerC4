@@ -4,7 +4,7 @@ using System.Text;
 
 namespace APManagerC4
 {
-    public class AESTextEncrypter
+    class AESTextEncrypter
     {
         public const int KeyLength = 256 / 8; // AES密钥长度
         public const int IVLength = 128 / 8; // IV长度

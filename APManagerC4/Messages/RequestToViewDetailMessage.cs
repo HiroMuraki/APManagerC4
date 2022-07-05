@@ -7,7 +7,7 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 
 namespace APManagerC4.Messages
 {
-    public class RequestToViewDetailMessage : RequestMessage<bool>
+    class RequestToViewDetailMessage : RequestMessage<bool>
     {
         public Guid Guid { get; init; }
         public bool ReadOnlyMode { get; init; }

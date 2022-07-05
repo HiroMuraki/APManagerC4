@@ -76,32 +76,45 @@ namespace APManagerC4
             }
         }
 
+        [BytesSerializable]
         class EncryptedAccountItem
         {
+            [BytesIncluded(0)] string _title = string.Empty;
+            [BytesIncluded(1)] string _website = string.Empty;
+            [BytesIncluded(2)] string _groupName = string.Empty;
+            [BytesIncluded(3)] string _userName = string.Empty;
+            [BytesIncluded(4)] string _loginName = string.Empty;
+            [BytesIncluded(5)] string _loginPassword = string.Empty;
+            [BytesIncluded(6)] string _email = string.Empty;
+            [BytesIncluded(7)] string _phone = string.Empty;
+            [BytesIncluded(8)] string _remarks = string.Empty;
+            [BytesIncluded(9)] string _creationTime = string.Empty;
+            [BytesIncluded(10)] string _updateTime = string.Empty;
+
             [JsonIgnore]
-            public Guid Guid { get; init; } = Guid.NewGuid();
+            public Guid Guid { get; init; }
             [Order(0), PropertyName("title")]
-            public string Title { get; init; } = string.Empty;
+            public string Title { get => _title; init => _title = value; }
             [Order(1), PropertyName("website")]
-            public string Website { get; init; } = string.Empty;
+            public string Website { get => _website; init => _website = value; }
             [Order(2), PropertyName("groupName")]
-            public string GroupName { get; init; } = string.Empty;
+            public string GroupName { get => _groupName; init => _groupName = value; }
             [Order(3), PropertyName("userName")]
-            public string UserName { get; init; } = string.Empty;
+            public string UserName { get => _userName; init => _userName = value; }
             [Order(4), PropertyName("loginName")]
-            public string LoginName { get; init; } = string.Empty;
+            public string LoginName { get => _loginName; init => _loginName = value; }
             [Order(5), PropertyName("loginPassword")]
-            public string LoginPassword { get; init; } = string.Empty;
+            public string LoginPassword { get => _loginPassword; init => _loginPassword = value; }
             [Order(6), PropertyName("email")]
-            public string Email { get; init; } = string.Empty;
+            public string Email { get => _email; init => _email = value; }
             [Order(7), PropertyName("phone")]
-            public string Phone { get; init; } = string.Empty;
+            public string Phone { get => _phone; init => _phone = value; }
             [Order(8), PropertyName("remarks")]
-            public string Remarks { get; init; } = string.Empty;
+            public string Remarks { get => _remarks; init => _remarks = value; }
             [Order(9), PropertyName("creationTime")]
-            public string CreationTime { get; init; } = string.Empty;
+            public string CreationTime { get => _creationTime; init => _creationTime = value; }
             [Order(10), PropertyName("updateTime")]
-            public string UpdateTime { get; init; } = string.Empty;
+            public string UpdateTime { get => _updateTime; init => _updateTime = value; }
         }
 
         public bool HasUnsavedChanges { get; private set; }
@@ -153,11 +166,18 @@ namespace APManagerC4
                 Encrypter = new AESTextEncrypter(PreprocessKey(password))
             };
 
-            if (!File.Exists("data.json"))
+            _data = new();
+            if (File.Exists("data.dat"))
             {
-                _data = new();
+                using (var fs = new FileStream("data.dat", FileMode.Open, FileAccess.Read))
+                {
+                    var buffer = new byte[fs.Length];
+                    fs.Read(buffer, 0, buffer.Length);
+                    var data = _bytesSerializer.DeserializeFromBytes<EncryptedAccountItem[]>(buffer);
+                    _data = new(data);
+                }
             }
-            else
+            if (File.Exists("data.json"))
             {
                 using (var reader = new StreamReader("data.json"))
                 {
@@ -178,6 +198,10 @@ namespace APManagerC4
             {
                 string jsonText = JsonSerializer.Serialize(_data.ToArray());
                 writer.Write(jsonText);
+            }
+            using (var fs = new FileStream("data.dat", FileMode.Create, FileAccess.Write))
+            {
+                fs.Write(_bytesSerializer.SerializeToBytes(_data.ToArray()));
             }
             HasUnsavedChanges = false;
         }
@@ -201,6 +225,7 @@ namespace APManagerC4
             HasUnsavedChanges = true;
         }
 
+        private readonly BytesSerializer _bytesSerializer = new() { Encoding = Encoding.ASCII };
         private ItemEncrypter _itemEncrypter = new();
         private List<EncryptedAccountItem> _data = new();
         private static byte[] PreprocessKey(string password)
