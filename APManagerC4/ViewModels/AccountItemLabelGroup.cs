@@ -3,13 +3,13 @@ using CommunityToolkit.Mvvm.Messaging;
 
 namespace APManagerC4.ViewModels
 {
-    public class AccountItemGroup : ObservableRecipient
+    public class AccountItemLabelGroup : ObservableRecipient
     {
-        class ItemComparer : IComparer<AccountItem>
+        class ItemComparer : IComparer<AccountItemLabel>
         {
             public static ItemComparer Default { get; } = new();
 
-            public int Compare(AccountItem? x, AccountItem? y)
+            public int Compare(AccountItemLabel? x, AccountItemLabel? y)
             {
                 return x?.Title.CompareTo(y?.Title) ?? -1;
             }
@@ -20,7 +20,7 @@ namespace APManagerC4.ViewModels
             get => _groupName;
             set => SetProperty(ref _groupName, value);
         }
-        public AccountItem[] Items
+        public AccountItemLabel[] Items
         {
             get => _items;
             set => SetProperty(ref _items, value);
@@ -34,7 +34,7 @@ namespace APManagerC4.ViewModels
         public void Fetch(IDataCenter<Models.AccountItem> dataCenter)
         {
             Items = (from i in dataCenter.Retrieve(item => item.GroupName == GroupName)
-                     select new AccountItem(Messenger)
+                     select new AccountItemLabel(Messenger)
                      {
                          Guid = i.Guid,
                          Title = i.Title
@@ -45,13 +45,13 @@ namespace APManagerC4.ViewModels
             Array.Sort(Items, ItemComparer.Default);
         }
 
-        public AccountItemGroup(IMessenger messenger) : base(messenger)
+        public AccountItemLabelGroup(IMessenger messenger) : base(messenger)
         {
 
         }
 
         private bool _isExpanded;
         private string _groupName = string.Empty;
-        private AccountItem[] _items = Array.Empty<AccountItem>();
+        private AccountItemLabel[] _items = Array.Empty<AccountItemLabel>();
     }
 }

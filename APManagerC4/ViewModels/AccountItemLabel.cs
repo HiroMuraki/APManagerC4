@@ -5,7 +5,7 @@ using System.Windows.Input;
 
 namespace APManagerC4.ViewModels
 {
-    public class AccountItem : ObservableRecipient
+    public class AccountItemLabel : ObservableRecipient
     {
         public static RoutedCommand RequestToViewCommand { get; } = new();
 
@@ -35,7 +35,7 @@ namespace APManagerC4.ViewModels
             Messenger.Send(message);
         }
 
-        public AccountItem(IMessenger messenger) : base(messenger)
+        public AccountItemLabel(IMessenger messenger) : base(messenger)
         {
             Messenger.Register<AccountItemUpdatedMessage>(this, (sender, e) =>
             {

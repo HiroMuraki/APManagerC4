@@ -32,7 +32,7 @@
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0" DataContext="{Binding Manager}">
                     <Grid.CommandBindings>
-                        <CommandBinding Command="{x:Static vm:AccountItem.RequestToViewCommand}" Executed="RequestToViewCommand_Executed" CanExecute="RequestToViewCommand_CanExecute"/>
+                        <CommandBinding Command="{x:Static vm:AccountItemLabel.RequestToViewCommand}" Executed="RequestToViewCommand_Executed" CanExecute="RequestToViewCommand_CanExecute"/>
                         <CommandBinding Command="{x:Static vm:Manager.NewItemCommand}" Executed="NewItemCommand_Executed" CanExecute="NewItemCommand_CanExecute"/>
                     </Grid.CommandBindings>
                     <Grid.Resources>
@@ -77,13 +77,13 @@
                     <ScrollViewer Grid.Row="0">
                         <ItemsControl ItemsSource="{Binding Groups}">
                             <ItemsControl.ItemTemplate>
-                                <DataTemplate DataType="{x:Type vm:AccountItemGroup}">
+                                <DataTemplate DataType="{x:Type vm:AccountItemLabelGroup}">
                                     <Expander Header="{Binding GroupName}" IsExpanded="{Binding IsExpanded}">
                                         <ItemsControl ItemsSource="{Binding Items}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate DataType="{x:Type vm:AccountItem}">
+                                                <DataTemplate DataType="{x:Type vm:AccountItemLabel}">
                                                     <RadioButton GroupName="AccountItems" Content="{Binding Title}"
-                                                         Command="{x:Static vm:AccountItem.RequestToViewCommand}"
+                                                         Command="{x:Static vm:AccountItemLabel.RequestToViewCommand}"
                                                          CommandParameter="{Binding}" IsChecked="{Binding IsSelected}"/>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>

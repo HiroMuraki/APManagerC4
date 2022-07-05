@@ -12,11 +12,11 @@ namespace APManagerC4.ViewModels
         public static readonly string DefualtGroupName = "未分组";
         public static readonly string DefaultItemTitle = "新建条目";
 
-        class GroupComparer : IComparer<AccountItemGroup>
+        class GroupComparer : IComparer<AccountItemLabelGroup>
         {
             public static GroupComparer Default { get; } = new();
 
-            public int Compare(AccountItemGroup? x, AccountItemGroup? y)
+            public int Compare(AccountItemLabelGroup? x, AccountItemLabelGroup? y)
             {
                 if (x?.GroupName == DefualtGroupName)
                 {
@@ -35,7 +35,7 @@ namespace APManagerC4.ViewModels
             private set => SetProperty(ref _hasFilter, value);
         }
         public DataCenter DataCenter { get; }
-        public ObservableCollection<AccountItemGroup> Groups
+        public ObservableCollection<AccountItemLabelGroup> Groups
         {
             get => _groups;
             set => SetProperty(ref _groups, value);
@@ -56,7 +56,7 @@ namespace APManagerC4.ViewModels
             var group = Groups.FirstOrDefault(g => g?.GroupName == DefualtGroupName, null);
             if (group is null)
             {
-                group = new AccountItemGroup(Messenger)
+                group = new AccountItemLabelGroup(Messenger)
                 {
                     GroupName = DefualtGroupName
                 };
@@ -84,7 +84,7 @@ namespace APManagerC4.ViewModels
         {
             foreach (var group in Groups)
             {
-                if (group.Items.FirstOrDefault(t => t?.Guid == guid, null) is AccountItem t)
+                if (group.Items.FirstOrDefault(t => t?.Guid == guid, null) is AccountItemLabel t)
                 {
                     DataCenter.Delete(t.Guid);
                     group.Fetch(DataCenter);
@@ -97,67 +97,55 @@ namespace APManagerC4.ViewModels
         public Manager(DataCenter dataCenter, IMessenger messenger) : base(messenger)
         {
             DataCenter = dataCenter;
-            /* 检查条目的所属组是否被修改，若被修改则重新调整条目 */
             Messenger.Register<AccountItemUpdatedMessage>(this, (sender, e) =>
             {
-                AccountItemGroup tGroup = null!;
-                Models.AccountItem tItem = null!;
-                int groupIndex = 0;
-                int itemIndex = 0;
-
-                for (; groupIndex < Groups.Count; groupIndex++)
+                /* 获取更新的AccountItem的Guid所在的AccountLabel与所属组，
+                 * 若该AccountItem的所属组与AccountLabel的所属组不同，
+                 * 则让当前组与AccountItem所属组的对应Group重新获取数据 */
+                foreach (var group in Groups)
                 {
-                    var group = Groups[groupIndex];
-                    itemIndex = 0;
-                    for (; itemIndex < group.Items.Length; itemIndex++)
+                    var label = group.Items.FirstOrDefault(t => t.Guid == e.Guid);
+                    if (label is null)
                     {
-                        if (e.Guid == group.Items[itemIndex].Guid)
-                        {
-                            tGroup = group;
-                            tItem = DataCenter.Retrieve(group.Items[itemIndex].Guid);
-                            break;
-                        }
+                        continue;
                     }
-                }
-                if (tGroup is null) throw new NullReferenceException();
-                if (tItem is null) throw new NullReferenceException();
 
-                if (tGroup.GroupName != tItem.GroupName)
-                {
-                    if (!Groups.Any(t => t.GroupName == e.Data.GroupName))
+                    var tItem = DataCenter.Retrieve(label.Guid);
+                    if (group.GroupName != tItem.GroupName)
                     {
-                        Groups.Add(new AccountItemGroup(Messenger)
+                        if (!Groups.Any(t => t.GroupName == e.Data.GroupName))
                         {
-                            GroupName = e.Data.GroupName
-                        });
-                    }
-                    for (int i = 0; i < Groups.Count; i++)
-                    {
-                        var group = Groups[i];
-                        if (group.GroupName == tGroup.GroupName || group.GroupName == tItem.GroupName)
-                        {
-                            group.Fetch(DataCenter);
-                            if (group.GroupName == tItem.GroupName)
+                            Groups.Add(new AccountItemLabelGroup(Messenger)
                             {
-                                group.Items.First(t => t.Guid == tItem.Guid).IsSelected = true;
-                            }
-                            group.IsExpanded = true;
+                                GroupName = e.Data.GroupName
+                            });
                         }
+                        // 当前组重新获取数据
+                        group.Fetch(DataCenter);
+                        group.IsExpanded = true;
+
+                        // 查找新组后，新组重新获取数据
+                        var tGroup = Groups.First(g => g.GroupName == tItem.GroupName);
+                        tGroup.Fetch(DataCenter);
+                        tGroup.IsExpanded = true;
+                        tGroup.Items.First(t => t.Guid == tItem.Guid).IsSelected = true; // 让其保持选中状态
+
+                        RemoveEmptyGroups();
+                        SortGroups();
                     }
-                    RemoveEmptyGroups();
-                    SortGroups();
+                    return;
                 }
             });
         }
 
         private bool _hasFilter;
-        private ObservableCollection<AccountItemGroup> _groups = new();
+        private ObservableCollection<AccountItemLabelGroup> _groups = new();
         private void GenerateGroups(IEnumerable<Models.AccountItem> items)
         {
-            var dict = new Dictionary<string, List<AccountItem>>();
+            var dict = new Dictionary<string, List<AccountItemLabel>>();
             foreach (var item in items)
             {
-                var vmItem = new AccountItem(Messenger)
+                var vmItem = new AccountItemLabel(Messenger)
                 {
                     Guid = item.Guid,
                     Title = item.Title
@@ -169,7 +157,7 @@ namespace APManagerC4.ViewModels
                 }
                 else
                 {
-                    dict[item.GroupName] = new List<AccountItem>();
+                    dict[item.GroupName] = new List<AccountItemLabel>();
                     dict[item.GroupName].Add(vmItem);
                 }
             }
@@ -177,7 +165,7 @@ namespace APManagerC4.ViewModels
             Groups.Clear();
             foreach (var groupName in dict.Keys)
             {
-                Groups.Add(new AccountItemGroup(Messenger)
+                Groups.Add(new AccountItemLabelGroup(Messenger)
                 {
                     GroupName = groupName,
                     Items = dict[groupName].ToArray()

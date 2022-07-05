@@ -52,7 +52,7 @@ namespace APManagerC4
                     return;
                 }
             }
-            ((ViewModels.AccountItem)e.Parameter).RequestToView(Manager.HasFilter);
+            ((ViewModels.AccountItemLabel)e.Parameter).RequestToView(Manager.HasFilter);
         }
         private void RequestToViewCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
