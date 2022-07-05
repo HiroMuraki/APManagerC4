@@ -23,7 +23,7 @@ namespace APManagerC4
         public MainWindow()
         {
             _dataCenter = new TestDataCenter();
-            Manager = new ViewModels.Manager(WeakReferenceMessenger.Default, _dataCenter);
+            Manager = new ViewModels.Manager(WeakReferenceMessenger.Default, _dataCenter, _dataCenter);
             Viewer = new ViewModels.AccountItemViewer(WeakReferenceMessenger.Default, _dataCenter);
 
             {

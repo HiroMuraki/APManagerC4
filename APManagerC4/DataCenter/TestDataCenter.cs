@@ -11,7 +11,7 @@ namespace APManagerC4
     /// <summary>
     /// 默认数据中心
     /// </summary>
-    class TestDataCenter : IDataCenter<AccountItem>
+    class TestDataCenter : IDataCenter<AccountItem>, IDataProvider<LabelInfo>
     {
         class ItemEncrypter
         {
@@ -21,7 +21,7 @@ namespace APManagerC4
             {
                 if (item is null) return null;
 
-                var result = new EncryptedAccountItem()
+                return new EncryptedAccountItem()
                 {
                     Guid = item.Guid,
                     Title = EncryptString(item.Title),
@@ -36,13 +36,12 @@ namespace APManagerC4
                     CreationTime = EncryptString(item.CreationTime.ToString()),
                     UpdateTime = EncryptString(item.UpdateTime.ToString())
                 };
-                return result;
             }
-            public AccountItem? GetDecrypted(EncryptedAccountItem? item)
+            public AccountItem? DecryptToAccountItem(EncryptedAccountItem? item)
             {
                 if (item is null) return null;
 
-                var result = new AccountItem()
+                return new AccountItem()
                 {
                     Guid = item.Guid,
                     Title = DecryptString(item.Title),
@@ -57,7 +56,17 @@ namespace APManagerC4
                     CreationTime = long.TryParse(DecryptString(item.CreationTime), out var creationTime) ? creationTime : 0,
                     UpdateTime = long.TryParse(DecryptString(item.UpdateTime), out var updateTime) ? updateTime : 0
                 };
-                return result;
+            }
+            public LabelInfo? DecryptToLabelInfo(EncryptedAccountItem? item)
+            {
+                if (item is null) return null;
+
+                return new LabelInfo()
+                {
+                    Guid = item.Guid,
+                    Title = DecryptString(item.Title),
+                    GroupName = DecryptString(item.GroupName)
+                };
             }
 
             private string EncryptString(string text)
@@ -136,12 +145,12 @@ namespace APManagerC4
         public AccountItem Retrieve(Guid guid)
         {
             var result = _data.FirstOrDefault(t => t?.Guid == guid, null);
-            return _itemEncrypter.GetDecrypted(result) ?? throw new ArgumentException("No data for " + guid);
+            return _itemEncrypter.DecryptToAccountItem(result) ?? throw new ArgumentException("No data for " + guid);
         }
         public IEnumerable<AccountItem> Retrieve(Predicate<AccountItem>? predicate)
         {
             var result = from item in _data
-                         let data = _itemEncrypter.GetDecrypted(item)
+                         let data = _itemEncrypter.DecryptToAccountItem(item)
                          where predicate?.Invoke(data) ?? true
                          select data;
 
@@ -149,6 +158,10 @@ namespace APManagerC4
             {
                 yield return item;
             }
+        }
+        public IEnumerable<LabelInfo> Retrieve(Predicate<LabelInfo>? predicate)
+        {
+            throw new NotImplementedException();
         }
         public void Upate(Guid guid, AccountItem newData)
         {
@@ -224,7 +237,7 @@ namespace APManagerC4
 
             foreach (var item in preData)
             {
-                var data = preEncrypter.GetDecrypted(item);
+                var data = preEncrypter.DecryptToAccountItem(item);
                 _data.Add(_itemEncrypter.GetEncrypted(data)!);
             }
 
@@ -241,6 +254,7 @@ namespace APManagerC4
                 return hashFunc.ComputeHash(Encoding.UTF8.GetBytes(password));
             }
         }
+
         //private readonly static LinkedList<AccountItem> _fakeData = new();
         //private static string RandomString()
         //{

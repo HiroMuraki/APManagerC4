@@ -127,7 +127,7 @@ namespace APManagerC4.ViewModels
             });
         }
 
-        public AccountItemViewer(IMessenger messenger, IDataCenter<Models.AccountItem> dataCenter) : base(messenger)
+        public AccountItemViewer(IMessenger messenger, DataCenter dataCenter) : base(messenger)
         {
             ReadOnlyMode = true;
             _dataCenter = dataCenter;
@@ -154,7 +154,7 @@ namespace APManagerC4.ViewModels
         }
 
         private static readonly Models.AccountItem _default = new();
-        private readonly IDataCenter<Models.AccountItem> _dataCenter;
+        private readonly DataCenter _dataCenter;
         private bool _readOnlyMode;
         private bool _hasUnsavedChanges;
         private Models.AccountItem _originData = _default;
