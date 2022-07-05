@@ -62,10 +62,6 @@ namespace APManagerC4
                     return;
                 }
             }
-            if (Viewer.HasUnsavedChanges)
-            {
-                Viewer.SaveChanges();
-            }
             ((ViewModels.AccountItem)e.Parameter).RequestToView(Manager.HasFilter);
         }
         private void RequestToViewCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -99,6 +95,10 @@ namespace APManagerC4
         }
         private void SaveChangesCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            if (Viewer.HasUnsavedChanges)
+            {
+                Viewer.SaveChanges();
+            }
             ShowVerficationPanel();
         }
         private void SaveChangesCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
