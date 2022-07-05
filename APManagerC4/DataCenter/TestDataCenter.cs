@@ -161,7 +161,15 @@ namespace APManagerC4
         }
         public IEnumerable<LabelInfo> Retrieve(Predicate<LabelInfo>? predicate)
         {
-            throw new NotImplementedException();
+            var result = from item in _data
+                         let data = _itemEncrypter.DecryptToLabelInfo(item)
+                         where predicate?.Invoke(data) ?? true
+                         select data;
+
+            foreach (var item in result)
+            {
+                yield return item;
+            }
         }
         public void Upate(Guid guid, AccountItem newData)
         {

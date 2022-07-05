@@ -45,13 +45,22 @@ namespace APManagerC4.ViewModels
 
         public void FetchDataIf(Predicate<Models.AccountItem> predicate)
         {
-            FetchDataHelper(predicate);
+            var result = from item in DataCenter.Retrieve(predicate)
+                         select new Models.LabelInfo()
+                         {
+                             Guid = item.Guid,
+                             Title = item.Title,
+                             GroupName = item.GroupName
+                         };
+            GenerateGroups(result);
+            SortGroups();
             OnGroupsModificated();
             HasFilter = true;
         }
         public void FetchData()
         {
-            FetchDataHelper(t => true);
+            GenerateGroups(AbstractDataProvider.Retrieve(t => true));
+            SortGroups();
             OnGroupsModificated();
             HasFilter = false;
         }
@@ -200,11 +209,6 @@ namespace APManagerC4.ViewModels
         private void OnGroupsModificated()
         {
             OnPropertyChanged(nameof(Groups));
-        }
-        private void FetchDataHelper(Predicate<Models.LabelInfo> predicate)
-        {
-            GenerateGroups(AbstractDataProvider.Retrieve(predicate));
-            SortGroups();
         }
     }
 }
