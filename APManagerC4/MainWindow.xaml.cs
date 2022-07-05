@@ -116,7 +116,7 @@ namespace APManagerC4
                 return;
             }
 
-            SearchAsync(((TextBox)sender).Text.ToUpper());
+            Search(((TextBox)sender).Text.ToUpper());
         }
         private void Window_Closing(object sender, CancelEventArgs e)
         {
@@ -131,7 +131,7 @@ namespace APManagerC4
         }
 
         private bool _initialized;
-        private readonly IntervalWaiter _searchWaiter = new() { Interval = TimeSpan.FromMilliseconds(150) };
+        private readonly IntervalWaiter _searchWaiter = new() { Interval = TimeSpan.FromMilliseconds(300) };
         private readonly TestDataCenter _dataCenter;
         private void ShowVerficationPanel()
         {
@@ -195,7 +195,7 @@ namespace APManagerC4
                 return result;
             }
         }
-        private void SearchAsync(string pattern)
+        private void Search(string pattern)
         {
             if (string.IsNullOrEmpty(pattern))
             {
@@ -204,7 +204,11 @@ namespace APManagerC4
             }
             else
             {
-                Manager.FetchDataIf(t => IsPatternMatched(pattern, t));
+                var regexs = from i in Regex.Split(pattern, @"[\s]+")
+                             where !string.IsNullOrEmpty(i)
+                             select new Regex(i);
+
+                Manager.FetchDataIf(t => IsPatternMatched(regexs.ToArray(), t));
                 if (Manager.Groups.Any())
                 {
                     var t = Manager.Groups.First().Items.First();
@@ -221,9 +225,8 @@ namespace APManagerC4
                 }
             }
 
-            static bool IsPatternMatched(string pattern, Models.AccountItem item)
+            static bool IsPatternMatched(Regex[] regexs, Models.AccountItem item)
             {
-                string[] keywords = Regex.Split(pattern, @"[\s]+");
                 string[] text =
                 {
                     item.Title.ToUpper(),
@@ -231,15 +234,15 @@ namespace APManagerC4
                     item.Remarks.ToUpper()
                 };
 
-                if (keywords.Length == 1)
+                if (regexs.Length == 1)
                 {
-                    return IsKeywordMatchedCore(keywords[0], text);
+                    return IsKeywordMatchedCore(regexs[0], text);
                 }
                 else
                 {
-                    foreach (var k in keywords)
+                    foreach (var reg in regexs)
                     {
-                        if (!IsKeywordMatchedCore(k, text))
+                        if (!IsKeywordMatchedCore(reg, text))
                         {
                             return false;
                         }
@@ -247,11 +250,11 @@ namespace APManagerC4
                     return true;
                 }
 
-                static bool IsKeywordMatchedCore(string keyword, string[] text)
+                static bool IsKeywordMatchedCore(Regex reg, string[] text)
                 {
                     foreach (var item in text)
                     {
-                        if (Regex.IsMatch(item, keyword))
+                        if (reg.IsMatch(item))
                         {
                             return true;
                         }
