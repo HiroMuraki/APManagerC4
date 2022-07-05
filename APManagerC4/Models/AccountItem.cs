@@ -102,17 +102,17 @@
             }
         }
 
-        private Guid _guid;
-        private string _groupName = string.Empty;
-        private string _website = string.Empty;
-        private string _title = string.Empty;
-        private string _userName = string.Empty;
-        private string _loginName = string.Empty;
-        private string _loginPassword = string.Empty;
-        private string _email = string.Empty;
-        private string _phone = string.Empty;
-        private string _remarks = string.Empty;
-        private long _creationTime;
-        private long _updateTime;
+        private readonly Guid _guid;
+        private readonly string _groupName = string.Empty;
+        private readonly string _website = string.Empty;
+        private readonly string _title = string.Empty;
+        private readonly string _userName = string.Empty;
+        private readonly string _loginName = string.Empty;
+        private readonly string _loginPassword = string.Empty;
+        private readonly string _email = string.Empty;
+        private readonly string _phone = string.Empty;
+        private readonly string _remarks = string.Empty;
+        private readonly long _creationTime;
+        private readonly long _updateTime;
     }
 }

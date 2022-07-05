@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using DataCenter = APManagerC4.IDataCenter<APManagerC4.Models.AccountItem>;
+using AbstractDataProvider = APManagerC4.IDataProvider<APManagerC4.Models.LabelInfo>;
 
 namespace APManagerC4.ViewModels
 {
@@ -39,6 +40,7 @@ namespace APManagerC4.ViewModels
             private set => SetProperty(ref _hasFilter, value);
         }
         public DataCenter DataCenter { get; }
+        public AbstractDataProvider AbstractDataProvider { get; }
         public AccountItemLabelGroup[] Groups => _groups.ToArray();
 
         public void FetchDataIf(Predicate<Models.AccountItem> predicate)
