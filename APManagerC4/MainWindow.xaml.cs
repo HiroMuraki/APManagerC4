@@ -113,37 +113,16 @@ namespace APManagerC4
                 VerfiyPassword();
             }
         }
-        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        private async void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string text = ((TextBox)sender).Text.ToUpper();
-            if (string.IsNullOrEmpty(text))
+            _searchWaiter.Reset();
+            bool ok = await _searchWaiter.Wait();
+            if (!ok)
             {
-                Viewer.Unload();
-                Manager.FetchData();
+                return;
             }
-            else
-            {
-                Manager.FetchDataIf(t =>
-                {
-                    return Regex.IsMatch(t.Title.ToUpper(), text)
-                        || Regex.IsMatch(t.Website.ToUpper(), text)
-                        || Regex.IsMatch(t.Remarks.ToUpper(), text);
-                });
-                if (Manager.Groups.Any())
-                {
-                    var t = Manager.Groups.First().Items.First();
-                    t.IsSelected = true;
-                    t.RequestToView(true);
-                }
-                else
-                {
-                    Viewer.Unload();
-                }
-                foreach (var group in Manager.Groups)
-                {
-                    group.IsExpanded = true;
-                }
-            }
+
+            SearchAsync(((TextBox)sender).Text.ToUpper());
         }
         private void Window_Closing(object sender, CancelEventArgs e)
         {
@@ -158,6 +137,7 @@ namespace APManagerC4
         }
 
         private bool _initialized;
+        private readonly IntervalWaiter _searchWaiter = new() { Interval = TimeSpan.FromMilliseconds(150) };
         private readonly TestDataCenter _dataCenter;
         private void ShowVerficationPanel()
         {
@@ -201,12 +181,13 @@ namespace APManagerC4
                 string sPassword = new AESTextEncrypter(GetPasswordKey()).Encrypt(pasword);
                 MessageBox.Show($"已保存，请牢记密码凭证：\n{sPassword}", "", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+
             verficationPanel.Visibility = Visibility.Collapsed;
             verficationPanel.IsEnabled = false;
-            searchBox.Clear();
-            searchBox.Focus();
             mainPanel.Visibility = Visibility.Visible;
             mainPanel.IsEnabled = true;
+            searchBox.Clear();
+            searchBox.Focus();
 
             static byte[] GetPasswordKey()
             {
@@ -218,6 +199,71 @@ namespace APManagerC4
                 Array.Copy(ticksKey, 0, result, 16, ticksKey.Length);
                 Array.Copy(ticksKey, 0, result, 24, ticksKey.Length);
                 return result;
+            }
+        }
+        private void SearchAsync(string pattern)
+        {
+            if (string.IsNullOrEmpty(pattern))
+            {
+                Viewer.Unload();
+                Manager.FetchData();
+            }
+            else
+            {
+                Manager.FetchDataIf(t => IsPatternMatched(pattern, t));
+                if (Manager.Groups.Any())
+                {
+                    var t = Manager.Groups.First().Items.First();
+                    t.IsSelected = true;
+                    t.RequestToView(true);
+                }
+                else
+                {
+                    Viewer.Unload();
+                }
+                foreach (var group in Manager.Groups)
+                {
+                    group.IsExpanded = true;
+                }
+            }
+
+            static bool IsPatternMatched(string pattern, Models.AccountItem item)
+            {
+                string[] keywords = Regex.Split(pattern, @"[\s]+");
+                string[] text =
+                {
+                    item.Title.ToUpper(),
+                    item.Website.ToUpper(),
+                    item.Remarks.ToUpper()
+                };
+
+                if (keywords.Length == 1)
+                {
+                    return IsKeywordMatchedCore(keywords[0], text);
+                }
+                else
+                {
+                    foreach (var k in keywords)
+                    {
+                        if (!IsKeywordMatchedCore(k, text))
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+
+                static bool IsKeywordMatchedCore(string keyword, string[] text)
+                {
+                    foreach (var item in text)
+                    {
+                        if (Regex.IsMatch(item, keyword))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
             }
         }
     }

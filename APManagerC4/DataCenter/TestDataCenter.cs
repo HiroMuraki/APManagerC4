@@ -9,7 +9,7 @@ using System.Text;
 
 namespace APManagerC4
 {
-    class TestDataCenter : ViewModels.IDataCenter<AccountItem>
+    class TestDataCenter : IDataCenter<AccountItem>
     {
         class ItemEncrypter
         {
