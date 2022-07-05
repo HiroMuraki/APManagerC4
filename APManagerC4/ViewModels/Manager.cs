@@ -18,9 +18,13 @@ namespace APManagerC4.ViewModels
 
             public int Compare(AccountItemLabelGroup? x, AccountItemLabelGroup? y)
             {
-                if (x?.GroupName == DefualtGroupName)
+                if (x?.GroupName == DefualtGroupName && y?.GroupName != DefualtGroupName)
                 {
                     return 1;
+                }
+                else if (y?.GroupName == DefualtGroupName && x?.GroupName != DefualtGroupName)
+                {
+                    return -1;
                 }
                 return x?.GroupName.CompareTo(y?.GroupName) ?? -1;
             }
@@ -35,32 +39,31 @@ namespace APManagerC4.ViewModels
             private set => SetProperty(ref _hasFilter, value);
         }
         public DataCenter DataCenter { get; }
-        public ObservableCollection<AccountItemLabelGroup> Groups
-        {
-            get => _groups;
-            set => SetProperty(ref _groups, value);
-        }
+        public AccountItemLabelGroup[] Groups => _groups.ToArray();
 
         public void FetchDataIf(Predicate<Models.AccountItem> predicate)
         {
             FetchDataHelper(predicate);
+            OnGroupsModificated();
             HasFilter = true;
         }
         public void FetchData()
         {
             FetchDataHelper(t => true);
+            OnGroupsModificated();
             HasFilter = false;
         }
         public void NewItem()
         {
-            var group = Groups.FirstOrDefault(g => g?.GroupName == DefualtGroupName, null);
+            var group = _groups.FirstOrDefault(g => g?.GroupName == DefualtGroupName, null);
             if (group is null)
             {
                 group = new AccountItemLabelGroup(Messenger)
                 {
                     GroupName = DefualtGroupName
                 };
-                Groups.Add(group);
+                _groups.Add(group);
+                OnGroupsModificated();
             }
             group.IsExpanded = true;
 
@@ -82,7 +85,7 @@ namespace APManagerC4.ViewModels
         }
         public void DeleteItem(Guid guid)
         {
-            foreach (var group in Groups)
+            foreach (var group in _groups)
             {
                 if (group.Items.FirstOrDefault(t => t?.Guid == guid, null) is AccountItemLabel t)
                 {
@@ -92,6 +95,8 @@ namespace APManagerC4.ViewModels
                 }
             }
             RemoveEmptyGroups();
+            SortGroups();
+            OnGroupsModificated();
         }
 
         public Manager(DataCenter dataCenter, IMessenger messenger) : base(messenger)
@@ -102,44 +107,41 @@ namespace APManagerC4.ViewModels
                 /* 获取更新的AccountItem的Guid所在的AccountLabel与所属组，
                  * 若该AccountItem的所属组与AccountLabel的所属组不同，
                  * 则让当前组与AccountItem所属组的对应Group重新获取数据 */
-                foreach (var group in Groups)
+
+                var preGroup = _groups.First(g => g.Items.Any(t => t.Guid == e.Guid));
+                var label = preGroup.Items.First(t => t.Guid == e.Guid);
+                var tItem = DataCenter.Retrieve(label.Guid);
+
+                if (preGroup.GroupName != tItem.GroupName)
                 {
-                    var label = group.Items.FirstOrDefault(t => t.Guid == e.Guid);
-                    if (label is null)
+                    // 若所属组不存在则创建一个
+                    if (!_groups.Any(t => t.GroupName == e.Data.GroupName))
                     {
-                        continue;
-                    }
-
-                    var tItem = DataCenter.Retrieve(label.Guid);
-                    if (group.GroupName != tItem.GroupName)
-                    {
-                        if (!Groups.Any(t => t.GroupName == e.Data.GroupName))
+                        _groups.Add(new AccountItemLabelGroup(Messenger)
                         {
-                            Groups.Add(new AccountItemLabelGroup(Messenger)
-                            {
-                                GroupName = e.Data.GroupName
-                            });
-                        }
-                        // 当前组重新获取数据
-                        group.Fetch(DataCenter);
-                        group.IsExpanded = true;
-
-                        // 查找新组后，新组重新获取数据
-                        var tGroup = Groups.First(g => g.GroupName == tItem.GroupName);
-                        tGroup.Fetch(DataCenter);
-                        tGroup.IsExpanded = true;
-                        tGroup.Items.First(t => t.Guid == tItem.Guid).IsSelected = true; // 让其保持选中状态
-
-                        RemoveEmptyGroups();
-                        SortGroups();
+                            GroupName = e.Data.GroupName
+                        });
                     }
-                    return;
+
+                    // 当前组重新获取数据
+                    preGroup.Fetch(DataCenter);
+                    preGroup.IsExpanded = true;
+
+                    // 查找新组后，新组重新获取数据
+                    var tGroup = _groups.First(g => g.GroupName == tItem.GroupName);
+                    tGroup.Fetch(DataCenter);
+                    tGroup.IsExpanded = true;
+                    tGroup.Items.First(t => t.Guid == tItem.Guid).IsSelected = true; // 让其保持选中状态
+
+                    RemoveEmptyGroups();
+                    SortGroups();
+                    OnGroupsModificated();
                 }
             });
         }
 
         private bool _hasFilter;
-        private ObservableCollection<AccountItemLabelGroup> _groups = new();
+        private readonly List<AccountItemLabelGroup> _groups = new();
         private void GenerateGroups(IEnumerable<Models.AccountItem> items)
         {
             var dict = new Dictionary<string, List<AccountItemLabel>>();
@@ -162,10 +164,10 @@ namespace APManagerC4.ViewModels
                 }
             }
 
-            Groups.Clear();
+            _groups.Clear();
             foreach (var groupName in dict.Keys)
             {
-                Groups.Add(new AccountItemLabelGroup(Messenger)
+                _groups.Add(new AccountItemLabelGroup(Messenger)
                 {
                     GroupName = groupName,
                     Items = dict[groupName].ToArray()
@@ -174,27 +176,28 @@ namespace APManagerC4.ViewModels
         }
         private void SortGroups()
         {
-            var t = Groups.ToArray();
-            Array.Sort(t, GroupComparer.Default);
-            Groups.Clear();
-            foreach (var item in t)
+            _groups.Sort(GroupComparer.Default);
+            foreach (var item in _groups)
             {
                 item.SortItems();
-                Groups.Add(item);
             }
         }
         private void RemoveEmptyGroups()
         {
-            for (int i = 0; i < Groups.Count; i++)
+            for (int i = 0; i < _groups.Count; i++)
             {
-                if (!Groups[i].Items.Any())
+                if (!_groups[i].Items.Any())
                 {
-                    Groups.RemoveAt(i);
+                    _groups.RemoveAt(i);
                     i--;
                 }
             }
         }
-        public void FetchDataHelper(Predicate<Models.AccountItem> predicate)
+        private void OnGroupsModificated()
+        {
+            OnPropertyChanged(nameof(Groups));
+        }
+        private void FetchDataHelper(Predicate<Models.AccountItem> predicate)
         {
             var data = DataCenter.Retrieve(predicate);
             GenerateGroups(data);
