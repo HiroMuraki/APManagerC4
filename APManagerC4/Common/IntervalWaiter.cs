@@ -1,5 +1,8 @@
 ﻿namespace APManagerC4
 {
+    /// <summary>
+    /// 用于等待指定时间间隔
+    /// </summary>
     class IntervalWaiter
     {
         public TimeSpan Interval { get; init; }
@@ -20,7 +23,6 @@
                 return false;
             }
         }
-
         /// <summary>
         /// 重置等待
         /// </summary>

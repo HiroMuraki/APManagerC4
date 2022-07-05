@@ -8,6 +8,9 @@ using PropertyName = System.Text.Json.Serialization.JsonPropertyNameAttribute;
 
 namespace APManagerC4
 {
+    /// <summary>
+    /// 默认数据中心
+    /// </summary>
     class TestDataCenter : IDataCenter<AccountItem>
     {
         class ItemEncrypter

@@ -4,6 +4,9 @@ using System.Text;
 
 namespace APManagerC4
 {
+    /// <summary>
+    /// 用于对文本进行AES加密
+    /// </summary>
     class AESTextEncrypter
     {
         public const int KeyLength = 256 / 8; // AES密钥长度

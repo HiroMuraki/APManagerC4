@@ -3,6 +3,9 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 
 namespace APManagerC4.Messages
 {
+    /// <summary>
+    /// AccountItem更新消息
+    /// </summary>
     class AccountItemUpdatedMessage : RequestMessage<bool>
     {
         public Guid Guid { get; init; }

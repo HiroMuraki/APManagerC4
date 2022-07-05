@@ -96,17 +96,6 @@ namespace APManagerC4
             e.CanExecute = true;
         }
 
-        private void Window_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (Keyboard.IsKeyDown(Key.LeftCtrl) && e.Key == Key.S)
-            {
-                ShowVerficationPanel();
-            }
-            else if (!_initialized && e.Key == Key.Enter)
-            {
-                VerfiyPassword();
-            }
-        }
         private async void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             _searchWaiter.Reset();
@@ -117,6 +106,17 @@ namespace APManagerC4
             }
 
             Search(((TextBox)sender).Text.ToUpper());
+        }
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) && e.Key == Key.S)
+            {
+                ShowVerficationPanel();
+            }
+            else if (!_initialized && e.Key == Key.Enter)
+            {
+                VerfiyPassword();
+            }
         }
         private void Window_Closing(object sender, CancelEventArgs e)
         {

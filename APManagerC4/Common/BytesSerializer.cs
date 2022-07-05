@@ -3,12 +3,18 @@ using System.Text;
 
 namespace APManagerC4
 {
+    /// <summary>
+    /// 指示类实例可以被序列化为字节流
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false, Inherited = false)]
     class BytesSerializableAttribute : Attribute
     {
 
     }
 
+    /// <summary>
+    /// 指示字段需要加入到字节流序列化中
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
     class BytesIncludedAttribute : Attribute
     {
@@ -20,6 +26,9 @@ namespace APManagerC4
         }
     }
 
+    /// <summary>
+    /// 用于将对象序列化为字节流
+    /// </summary>
     class BytesSerializer
     {
         public static BytesSerializer Default { get; } = new();
@@ -86,7 +95,6 @@ namespace APManagerC4
             DeserializeFromBytesCore(bytes.AsSpan(), typeof(T), out var result);
             return (T)result;
         }
-
         public static void ClearFieldInfosCache()
         {
             _fieldInfosCache.Clear();

@@ -1,5 +1,9 @@
 ﻿namespace APManagerC4
 {
+    /// <summary>
+    /// 增删改查协定
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IDataCenter<T>
     {
         T Retrieve(Guid guid);

@@ -1,5 +1,8 @@
 ﻿namespace APManagerC4.Models
 {
+    /// <summary>
+    /// 核心数据模型
+    /// </summary>
     public record class AccountItem : IEquatable<AccountItem>
     {
         public Guid Guid
