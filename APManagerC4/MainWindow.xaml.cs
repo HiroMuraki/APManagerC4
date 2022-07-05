@@ -128,9 +128,16 @@ namespace APManagerC4
         }
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if (Keyboard.IsKeyDown(Key.LeftCtrl) && e.Key == Key.S)
+            if (Keyboard.IsKeyDown(Key.LeftCtrl))
             {
-                ShowVerficationPanel();
+                if (e.Key == Key.S)
+                {
+                    ShowVerficationPanel();
+                }
+                else if (e.Key == Key.F)
+                {
+                    searchBox.Focus();
+                }
             }
             else if (!_initialized && e.Key == Key.Enter)
             {

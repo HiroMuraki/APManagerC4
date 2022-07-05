@@ -142,6 +142,7 @@
                                 <Style TargetType="{x:Type Button}">
                                     <Setter Property="Width" Value="50" />
                                     <Setter Property="Height" Value="25" />
+                                    <Setter Property="Focusable" Value="False" />
                                     <Setter Property="VerticalAlignment" Value="Bottom" />
                                 </Style>
                             </Grid.Resources>
@@ -157,46 +158,46 @@
                                 </Grid.ColumnDefinitions>
                                 <DockPanel Grid.Column="0">
                                     <Label Content="标题" FontSize="18" FontWeight="Bold"/>
-                                    <TextBox Text="{Binding Title,UpdateSourceTrigger=PropertyChanged}" FontSize="16" IsReadOnly="{Binding ReadOnlyMode}"/>
+                                    <TextBox TabIndex="1" Text="{Binding Title,UpdateSourceTrigger=PropertyChanged}" FontSize="16" IsReadOnly="{Binding ReadOnlyMode}"/>
                                 </DockPanel>
                                 <DockPanel Grid.Column="1">
                                     <Label Content="分组" FontSize="18" FontWeight="Bold"/>
-                                    <TextBox Text="{Binding GroupName,UpdateSourceTrigger=PropertyChanged}" FontSize="16" IsReadOnly="{Binding ReadOnlyMode}"/>
+                                    <TextBox TabIndex="2" Text="{Binding GroupName,UpdateSourceTrigger=PropertyChanged}" FontSize="16" IsReadOnly="{Binding ReadOnlyMode}"/>
                                 </DockPanel>
                             </Grid>
                             <StackPanel Grid.Row="1" Margin="0,0,15,0">
                                 <DockPanel Margin="0,0,0,5">
                                     <Label Content="网址"/>
                                     <Button Content="复制" Command="{Binding CopyTextCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=local:MainWindow}}" CommandParameter="{Binding Website}" DockPanel.Dock="Right"/>
-                                    <TextBox Text="{Binding Website,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding ReadOnlyMode}"/>
+                                    <TextBox TabIndex="3" Text="{Binding Website,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding ReadOnlyMode}"/>
                                 </DockPanel>
                                 <DockPanel Margin="0,0,0,5">
                                     <Label Content="昵称"/>
                                     <Button Content="复制" Command="{Binding CopyTextCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=local:MainWindow}}" CommandParameter="{Binding UserName}" DockPanel.Dock="Right"/>
-                                    <TextBox Text="{Binding UserName,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding ReadOnlyMode}"/>
+                                    <TextBox TabIndex="4" Text="{Binding UserName,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding ReadOnlyMode}"/>
                                 </DockPanel>
                                 <DockPanel Margin="0,0,0,5">
                                     <Label Content="账号" DockPanel.Dock="Left"/>
                                     <Button Content="复制" Command="{Binding CopyTextCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=local:MainWindow}}" CommandParameter="{Binding LoginName}" DockPanel.Dock="Right"/>
-                                    <TextBox Text="{Binding LoginName,UpdateSourceTrigger=PropertyChanged}" BorderBrush="PaleVioletRed" IsReadOnly="{Binding ReadOnlyMode}"/>
+                                    <TextBox TabIndex="5" Text="{Binding LoginName,UpdateSourceTrigger=PropertyChanged}" BorderBrush="PaleVioletRed" IsReadOnly="{Binding ReadOnlyMode}"/>
                                 </DockPanel>
                                 <DockPanel Margin="0,0,0,5">
                                     <Label Content="密码"/>
                                     <Button Content="复制" Command="{Binding CopyTextCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=local:MainWindow}}" CommandParameter="{Binding LoginPassword}" DockPanel.Dock="Right"/>
-                                    <TextBox Text="{Binding LoginPassword,UpdateSourceTrigger=PropertyChanged}" BorderBrush="PaleVioletRed" IsReadOnly="{Binding ReadOnlyMode}"/>
+                                    <TextBox TabIndex="6" Text="{Binding LoginPassword,UpdateSourceTrigger=PropertyChanged}" BorderBrush="PaleVioletRed" IsReadOnly="{Binding ReadOnlyMode}"/>
                                 </DockPanel>
                                 <DockPanel Margin="0,0,0,5">
                                     <Label Content="手机"/>
                                     <Button Content="复制" Command="{Binding CopyTextCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=local:MainWindow}}" CommandParameter="{Binding Phone}" DockPanel.Dock="Right"/>
-                                    <TextBox Text="{Binding Phone,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding ReadOnlyMode}"/>
+                                    <TextBox TabIndex="7" Text="{Binding Phone,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding ReadOnlyMode}"/>
                                 </DockPanel>
                                 <DockPanel Margin="0,0,0,5">
                                     <Label Content="邮箱"/>
                                     <Button Content="复制" Command="{Binding CopyTextCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=local:MainWindow}}" CommandParameter="{Binding Email}" DockPanel.Dock="Right"/>
-                                    <TextBox Text="{Binding Email,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding ReadOnlyMode}"/>
+                                    <TextBox TabIndex="8" Text="{Binding Email,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding ReadOnlyMode}"/>
                                 </DockPanel>
                             </StackPanel>
-                            <TextBox Grid.Row="2" Height="Auto" Margin="10" Text="{Binding Remarks,UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" IsReadOnly="{Binding ReadOnlyMode}"
+                            <TextBox Grid.Row="2" Height="Auto" Margin="10" TabIndex="9" Text="{Binding Remarks,UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" IsReadOnly="{Binding ReadOnlyMode}"
                                      Padding="5" BorderThickness="1" VerticalContentAlignment="Top"/>
                         </Grid>
                         <Grid Grid.Row="2">
@@ -220,7 +221,7 @@
                             <ColumnDefinition/>
                             <ColumnDefinition Width="50"/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" Content="应用更改" Command="{x:Static vm:AccountItemViewer.ApplyModificationCommand}"/>
+                        <Button Grid.Column="0" Content="应用更改" TabIndex="10" Command="{x:Static vm:AccountItemViewer.ApplyModificationCommand}"/>
                         <Button Grid.Column="1" Content="删除" Command="{x:Static vm:AccountItemViewer.DeleteItemCommand}"/>
                     </Grid>
                 </Grid>
