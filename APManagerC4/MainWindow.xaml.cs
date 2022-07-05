@@ -23,8 +23,8 @@ namespace APManagerC4
         public MainWindow()
         {
             _dataCenter = new TestDataCenter();
-            Manager = new ViewModels.Manager(_dataCenter, WeakReferenceMessenger.Default);
-            Viewer = new ViewModels.AccountItemViewer(_dataCenter, WeakReferenceMessenger.Default);
+            Manager = new ViewModels.Manager(WeakReferenceMessenger.Default, _dataCenter);
+            Viewer = new ViewModels.AccountItemViewer(WeakReferenceMessenger.Default, _dataCenter);
 
             {
                 RegisterCommand(SaveDataCommand, (_, _) => VerfiyPassword(), (_, e) => e.CanExecute = true);

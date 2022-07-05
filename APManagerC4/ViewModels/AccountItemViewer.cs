@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using System.Windows.Input;
+using DataCenter = APManagerC4.IDataCenter<APManagerC4.Models.AccountItem>;
 
 namespace APManagerC4.ViewModels
 {
@@ -126,7 +127,7 @@ namespace APManagerC4.ViewModels
             });
         }
 
-        public AccountItemViewer(IDataCenter<Models.AccountItem> dataCenter, IMessenger messenger) : base(messenger)
+        public AccountItemViewer(IMessenger messenger, IDataCenter<Models.AccountItem> dataCenter) : base(messenger)
         {
             ReadOnlyMode = true;
             _dataCenter = dataCenter;

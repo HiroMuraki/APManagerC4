@@ -101,9 +101,11 @@ namespace APManagerC4.ViewModels
             OnGroupsModificated();
         }
 
-        public Manager(DataCenter dataCenter, IMessenger messenger) : base(messenger)
+        public Manager(IMessenger messenger, DataCenter dataCenter, AbstractDataProvider abstractDataProvider) : base(messenger)
         {
             DataCenter = dataCenter;
+            AbstractDataProvider = abstractDataProvider;
+
             Messenger.Register<AccountItemUpdatedMessage>(this, (sender, e) =>
             {
                 /* 获取更新的AccountItem的Guid所在的AccountLabel与所属组，
@@ -144,7 +146,7 @@ namespace APManagerC4.ViewModels
 
         private bool _hasFilter;
         private readonly List<AccountItemLabelGroup> _groups = new();
-        private void GenerateGroups(IEnumerable<Models.AccountItem> items)
+        private void GenerateGroups(IEnumerable<Models.LabelInfo> items)
         {
             var dict = new Dictionary<string, List<AccountItemLabel>>();
             foreach (var item in items)
@@ -199,10 +201,9 @@ namespace APManagerC4.ViewModels
         {
             OnPropertyChanged(nameof(Groups));
         }
-        private void FetchDataHelper(Predicate<Models.AccountItem> predicate)
+        private void FetchDataHelper(Predicate<Models.LabelInfo> predicate)
         {
-            var data = DataCenter.Retrieve(predicate);
-            GenerateGroups(data);
+            GenerateGroups(AbstractDataProvider.Retrieve(predicate));
             SortGroups();
         }
     }
