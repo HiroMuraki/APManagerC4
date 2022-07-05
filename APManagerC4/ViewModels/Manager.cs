@@ -1,10 +1,9 @@
 ﻿using APManagerC4.Messages;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
-using System.Collections.ObjectModel;
 using System.Windows.Input;
-using DataCenter = APManagerC4.IDataCenter<APManagerC4.Models.AccountItem>;
 using AbstractDataProvider = APManagerC4.IDataProvider<APManagerC4.Models.LabelInfo>;
+using DataCenter = APManagerC4.IDataCenter<APManagerC4.Models.AccountItem>;
 
 namespace APManagerC4.ViewModels
 {
