@@ -1,6 +1,6 @@
 ﻿namespace APManagerC4.Models
 {
-    public record class AccountItem
+    public record class AccountItem : IEquatable<AccountItem>
     {
         public Guid Guid
         {

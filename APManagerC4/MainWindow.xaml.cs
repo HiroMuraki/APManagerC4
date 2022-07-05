@@ -62,6 +62,10 @@ namespace APManagerC4
                     return;
                 }
             }
+            if (Viewer.HasUnsavedChanges)
+            {
+                Viewer.SaveChanges();
+            }
             ((ViewModels.AccountItem)e.Parameter).RequestToView(Manager.HasFilter);
         }
         private void RequestToViewCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -74,7 +78,7 @@ namespace APManagerC4
         }
         private void ApplyModification_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = Viewer.IsShownItem && !Viewer.ReadOnlyMode;
+            e.CanExecute = Viewer.IsShownItem && !Viewer.ReadOnlyMode && Viewer.HasUnsavedChanges;
         }
         private void DeleteItemCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
