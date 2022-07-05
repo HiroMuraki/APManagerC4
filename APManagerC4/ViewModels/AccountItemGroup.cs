@@ -18,8 +18,8 @@ namespace APManagerC4.ViewModels
 
         public string GroupName
         {
-            get => groupName;
-            set => SetProperty(ref groupName, value);
+            get => _groupName;
+            set => SetProperty(ref _groupName, value);
         }
         public AccountItem[] Items
         {
@@ -52,7 +52,7 @@ namespace APManagerC4.ViewModels
         }
 
         private bool _isExpanded;
-        private string groupName = string.Empty;
+        private string _groupName = string.Empty;
         private AccountItem[] _items = Array.Empty<AccountItem>();
     }
 }

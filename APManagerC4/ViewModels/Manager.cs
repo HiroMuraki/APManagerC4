@@ -18,6 +18,10 @@ namespace APManagerC4.ViewModels
 
             public int Compare(AccountItemGroup? x, AccountItemGroup? y)
             {
+                if (x?.GroupName == DefualtGroupName)
+                {
+                    return 1;
+                }
                 return x?.GroupName.CompareTo(y?.GroupName) ?? -1;
             }
         }
