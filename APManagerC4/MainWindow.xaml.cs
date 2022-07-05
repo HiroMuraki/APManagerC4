@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace APManagerC4
 {
@@ -12,7 +13,8 @@ namespace APManagerC4
     /// </summary>
     public partial class MainWindow : Window
     {
-        public RoutedCommand SaveData { get; } = new();
+        public RoutedCommand SaveDataCommand { get; } = new();
+        public RoutedCommand CopyTextCommand { get; } = new();
 
         public int MinimumPasswordLength => 8;
         public ViewModels.Manager Manager { get; }
@@ -24,10 +26,27 @@ namespace APManagerC4
             Manager = new ViewModels.Manager(_dataCenter, WeakReferenceMessenger.Default);
             Viewer = new ViewModels.AccountItemViewer(_dataCenter, WeakReferenceMessenger.Default);
 
-            var cb = new CommandBinding(SaveData);
-            cb.Executed += (sender, e) => VerfiyPassword();
-            cb.CanExecute += (sender, e) => e.CanExecute = true;
-            CommandBindings.Add(cb);
+            {
+                RegisterCommand(SaveDataCommand, (_, _) => VerfiyPassword(), (_, e) => e.CanExecute = true);
+                RegisterCommand(CopyTextCommand, (_, e) =>
+                    {
+                        string? text = e.Parameter as string;
+                        if (!string.IsNullOrEmpty(text))
+                        {
+                            try
+                            {
+                                Clipboard.SetText(text);
+                            }
+                            catch
+                            {
+
+                                MessageBox.Show("当前无法将文本复制到剪切板，请稍后再试", "", MessageBoxButton.OK);
+                            }
+                        }
+                    },
+                    (_, e) => e.CanExecute = Viewer.HasItemLoaded
+                );
+            }
 
             InitializeComponent();
 
@@ -64,7 +83,7 @@ namespace APManagerC4
         }
         private void ApplyModification_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = Viewer.IsShownItem && !Viewer.ReadOnlyMode && Viewer.HasUnsavedChanges;
+            e.CanExecute = Viewer.HasItemLoaded && !Viewer.ReadOnlyMode && Viewer.HasUnsavedChanges;
         }
         private void DeleteItemCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -73,7 +92,7 @@ namespace APManagerC4
         }
         private void DeleteItemCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = Viewer.IsShownItem && !Viewer.ReadOnlyMode;
+            e.CanExecute = Viewer.HasItemLoaded && !Viewer.ReadOnlyMode;
         }
         private void NewItemCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -133,6 +152,13 @@ namespace APManagerC4
         private bool _initialized;
         private readonly IntervalWaiter _searchWaiter = new() { Interval = TimeSpan.FromMilliseconds(300) };
         private readonly TestDataCenter _dataCenter;
+        private void RegisterCommand(ICommand command, ExecutedRoutedEventHandler executed, CanExecuteRoutedEventHandler canExecute)
+        {
+            var cb = new CommandBinding(command);
+            cb.Executed += executed;
+            cb.CanExecute += canExecute;
+            CommandBindings.Add(cb);
+        }
         private void ShowVerficationPanel()
         {
             verficationPanel.Visibility = Visibility.Visible;
@@ -173,7 +199,7 @@ namespace APManagerC4
                 _dataCenter.ReEncrypt(pasword);
                 _dataCenter.SaveChanges();
                 string sPassword = new AESTextEncrypter(GetPasswordKey()).Encrypt(pasword);
-                MessageBox.Show($"已保存，请牢记密码凭证：\n{sPassword}", "", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show($"已保存，请牢记密码凭证：\n{sPassword}", "保存成功", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
             verficationPanel.Visibility = Visibility.Collapsed;

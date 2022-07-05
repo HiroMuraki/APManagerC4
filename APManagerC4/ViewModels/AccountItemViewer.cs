@@ -70,7 +70,7 @@ namespace APManagerC4.ViewModels
             get => _updateTime;
             set => SetProperty(ref _updateTime, value);
         }
-        public bool IsShownItem => !ReferenceEquals(_originData, _default);
+        public bool HasItemLoaded => !ReferenceEquals(_originData, _default);
         public bool ReadOnlyMode
         {
             get => _readOnlyMode;
@@ -94,7 +94,7 @@ namespace APManagerC4.ViewModels
         public void Load(Models.AccountItem item)
         {
             LoadAccountItemModel(item);
-            OnPropertyChanged(nameof(IsShownItem));
+            OnPropertyChanged(nameof(HasItemLoaded));
             HasUnsavedChanges = false;
         }
         public void SaveChanges()
