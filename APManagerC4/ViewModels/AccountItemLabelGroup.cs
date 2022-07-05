@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using AbstractDataProvider = APManagerC4.IDataProvider<APManagerC4.Models.LabelInfo>;
 
 namespace APManagerC4.ViewModels
 {
@@ -31,9 +32,9 @@ namespace APManagerC4.ViewModels
             set => SetProperty(ref _isExpanded, value);
         }
 
-        public void Fetch(IDataCenter<Models.AccountItem> dataCenter)
+        public void Fetch(AbstractDataProvider dataProvider)
         {
-            Items = (from i in dataCenter.Retrieve(item => item.GroupName == GroupName)
+            Items = (from i in dataProvider.Retrieve(item => item.GroupName == GroupName)
                      select new AccountItemLabel(Messenger)
                      {
                          Guid = i.Guid,

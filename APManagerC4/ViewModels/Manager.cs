@@ -80,7 +80,7 @@ namespace APManagerC4.ViewModels
             };
             DataCenter.Add(model.Guid, model);
 
-            group.Fetch(DataCenter);
+            group.Fetch(AbstractDataProvider);
             var newItem = group.Items.First(t => t.Guid == model.Guid);
             newItem.IsSelected = true;
             newItem.RequestToView(HasFilter);
@@ -92,7 +92,7 @@ namespace APManagerC4.ViewModels
                 if (group.Items.FirstOrDefault(t => t?.Guid == guid, null) is AccountItemLabel t)
                 {
                     DataCenter.Delete(t.Guid);
-                    group.Fetch(DataCenter);
+                    group.Fetch(AbstractDataProvider);
                     break;
                 }
             }
@@ -126,12 +126,12 @@ namespace APManagerC4.ViewModels
                     }
 
                     // 当前组重新获取数据
-                    preGroup.Fetch(DataCenter);
+                    preGroup.Fetch(AbstractDataProvider);
                     preGroup.IsExpanded = true;
 
                     // 查找新组后，新组重新获取数据
                     var tGroup = _groups.First(g => g.GroupName == tItem.GroupName);
-                    tGroup.Fetch(DataCenter);
+                    tGroup.Fetch(AbstractDataProvider);
                     tGroup.IsExpanded = true;
                     tGroup.Items.First(t => t.Guid == tItem.Guid).IsSelected = true; // 让其保持选中状态
 
