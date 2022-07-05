@@ -2,8 +2,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using System.Collections.ObjectModel;
-using DataCenter = APManagerC4.IDataCenter<APManagerC4.Models.AccountItem>;
 using System.Windows.Input;
+using DataCenter = APManagerC4.IDataCenter<APManagerC4.Models.AccountItem>;
 
 namespace APManagerC4.ViewModels
 {

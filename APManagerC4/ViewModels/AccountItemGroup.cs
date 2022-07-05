@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
-using APManagerC4.Messages;
 
 namespace APManagerC4.ViewModels
 {

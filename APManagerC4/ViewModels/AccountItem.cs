@@ -1,7 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using APManagerC4.Messages;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
-using CommunityToolkit.Mvvm.Messaging.Messages;
-using APManagerC4.Messages;
 using System.Windows.Input;
 
 namespace APManagerC4.ViewModels
@@ -49,6 +48,6 @@ namespace APManagerC4.ViewModels
 
         private readonly Guid _guid;
         private string _title = string.Empty;
-        private bool _isSelected; 
+        private bool _isSelected;
     }
 }

@@ -1,6 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using APManagerC4.Messages;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
-using APManagerC4.Messages;
 using System.Windows.Input;
 
 namespace APManagerC4.ViewModels
