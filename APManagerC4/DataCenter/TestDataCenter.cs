@@ -92,7 +92,7 @@ namespace APManagerC4
             [BytesIncluded(10)] string _updateTime = string.Empty;
 
             [JsonIgnore]
-            public Guid Guid { get; init; }
+            public Guid Guid { get; } = Guid.NewGuid();
             [Order(0), PropertyName("title")]
             public string Title { get => _title; init => _title = value; }
             [Order(1), PropertyName("website")]
