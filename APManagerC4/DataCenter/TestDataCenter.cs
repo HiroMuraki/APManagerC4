@@ -92,7 +92,7 @@ namespace APManagerC4
             [BytesIncluded(10)] string _updateTime = string.Empty;
 
             [JsonIgnore]
-            public Guid Guid { get; } = Guid.NewGuid();
+            public Guid Guid { get; init; } = Guid.NewGuid();
             [Order(0), PropertyName("title")]
             public string Title { get => _title; init => _title = value; }
             [Order(1), PropertyName("website")]
@@ -165,8 +165,8 @@ namespace APManagerC4
             {
                 Encrypter = new AESTextEncrypter(PreprocessKey(password))
             };
-
             _data = new();
+#if BYTES_SERIALIZATION || ALL_SERIALIZATION
             if (File.Exists("data.dat"))
             {
                 using (var fs = new FileStream("data.dat", FileMode.Open, FileAccess.Read))
@@ -177,6 +177,7 @@ namespace APManagerC4
                     _data = new(data);
                 }
             }
+#elif JSON_SERIALIZATION || ALL_SERIALIZATION
             if (File.Exists("data.json"))
             {
                 using (var reader = new StreamReader("data.json"))
@@ -189,20 +190,23 @@ namespace APManagerC4
                     _data = new(data);
                 }
             }
-
+#endif
             HasUnsavedChanges = false;
         }
         public void SaveChanges()
         {
+#if BYTES_SERIALIZATION || ALL_SERIALIZATION
+            using (var fs = new FileStream("data.dat", FileMode.Create, FileAccess.Write))
+            {
+                fs.Write(_bytesSerializer.SerializeToBytes(_data.ToArray()));
+            }
+#elif JSON_SERIALIZATION || ALL_SERIALIZATION
             using (var writer = new StreamWriter("data.json"))
             {
                 string jsonText = JsonSerializer.Serialize(_data.ToArray());
                 writer.Write(jsonText);
             }
-            using (var fs = new FileStream("data.dat", FileMode.Create, FileAccess.Write))
-            {
-                fs.Write(_bytesSerializer.SerializeToBytes(_data.ToArray()));
-            }
+#endif
             HasUnsavedChanges = false;
         }
         public void ReEncrypt(string password)
