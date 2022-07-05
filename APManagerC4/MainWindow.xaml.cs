@@ -204,24 +204,21 @@ namespace APManagerC4
             }
             else
             {
-                var regexs = from i in Regex.Split(pattern, @"[\s]+")
-                             where !string.IsNullOrEmpty(i)
-                             select new Regex(i);
-
+                var regexs = from i in Regex.Split(pattern, @"[\s]+") select new Regex(i);
                 Manager.FetchDataIf(t => IsPatternMatched(regexs.ToArray(), t));
                 if (Manager.Groups.Any())
                 {
                     var t = Manager.Groups.First().Items.First();
                     t.IsSelected = true;
                     t.RequestToView(true);
+                    foreach (var group in Manager.Groups)
+                    {
+                        group.IsExpanded = true;
+                    }
                 }
                 else
                 {
                     Viewer.Unload();
-                }
-                foreach (var group in Manager.Groups)
-                {
-                    group.IsExpanded = true;
                 }
             }
 
@@ -234,33 +231,15 @@ namespace APManagerC4
                     item.Remarks.ToUpper()
                 };
 
-                if (regexs.Length == 1)
+                foreach (var reg in regexs)
                 {
-                    return IsKeywordMatchedCore(regexs[0], text);
-                }
-                else
-                {
-                    foreach (var reg in regexs)
+                    if (text.Any(reg.IsMatch))
                     {
-                        if (!IsKeywordMatchedCore(reg, text))
-                        {
-                            return false;
-                        }
+                        return true;
                     }
-                    return true;
                 }
 
-                static bool IsKeywordMatchedCore(Regex reg, string[] text)
-                {
-                    foreach (var item in text)
-                    {
-                        if (reg.IsMatch(item))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
+                return false;
             }
         }
     }
