@@ -143,10 +143,12 @@ namespace APManagerC4.ViewModels
             });
             PropertyChanged += (sender, e) =>
             {
-                if (e.PropertyName != nameof(HasUnsavedChanges))
+                if (HasUnsavedChanges || e.PropertyName == nameof(HasUnsavedChanges))
                 {
-                    HasUnsavedChanges = true;
+                    return;
                 }
+
+                HasUnsavedChanges = true;
             };
         }
 
