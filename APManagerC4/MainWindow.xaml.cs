@@ -125,6 +125,21 @@ namespace APManagerC4
 
             Search(((TextBox)sender).Text.ToUpper());
         }
+        private void ComboBox_DropDownOpened(object sender, EventArgs e)
+        {
+            var combox = (ComboBox)sender;
+            string propName = combox.GetBindingExpression(ComboBox.TextProperty).ResolvedSourcePropertyName;
+            var propInfo = typeof(Models.AccountItem).GetProperty(propName);
+
+            if (propInfo is null)
+            {
+                throw new NullReferenceException($"No such property '{propName}'");
+            }
+
+            combox.ItemsSource = Manager.RetrieveOptions(
+                p => (propInfo.GetValue(p) as string)?.Trim(),
+                v => !string.IsNullOrWhiteSpace(v));
+        }
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (Keyboard.IsKeyDown(Key.LeftCtrl))
@@ -273,22 +288,6 @@ namespace APManagerC4
 
                 return false;
             }
-        }
-
-        private void ComboBox_DropDownOpened(object sender, EventArgs e)
-        {
-            var combox = (ComboBox)sender;
-            string propName = combox.GetBindingExpression(ComboBox.TextProperty).ResolvedSourcePropertyName;
-            var propInfo = typeof(Models.AccountItem).GetProperty(propName);
-
-            if (propInfo is null)
-            {
-                throw new NullReferenceException($"No such property '{propName}'");
-            }
-
-            combox.ItemsSource = Manager.RetrieveOptions(
-                t => (propInfo.GetValue(t) as string)?.Trim(),
-                p => !string.IsNullOrWhiteSpace(p));
         }
     }
 }

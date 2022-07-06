@@ -115,6 +115,7 @@ namespace APManagerC4.ViewModels
             var result = from item in DataCenter.Retrieve(t => true)
                          let value = selector(item)
                          where predicate?.Invoke(value) ?? true
+                         orderby value
                          select value;
 
             return result.Distinct().ToArray();
