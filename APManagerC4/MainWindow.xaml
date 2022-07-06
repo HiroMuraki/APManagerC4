@@ -71,10 +71,15 @@
                         </Style>
                     </Grid.Resources>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
                         <RowDefinition/>
                         <RowDefinition Height="30"/>
                     </Grid.RowDefinitions>
-                    <ScrollViewer Grid.Row="0">
+                    <DockPanel>
+                        <Label Content="分组依据" VerticalContentAlignment="Center"/>
+                        <ComboBox Text="{Binding GroupKey}" ItemsSource="{Binding GroupKeys}" VerticalContentAlignment="Center"/>
+                    </DockPanel>
+                    <ScrollViewer Grid.Row="1">
                         <ItemsControl ItemsSource="{Binding Groups}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="{x:Type vm:AccountItemLabelGroup}">
@@ -103,7 +108,7 @@
                             </ItemsControl.ItemsPanel>
                         </ItemsControl>
                     </ScrollViewer>
-                    <Button Grid.Row="1" Content="+" FontSize="16" Command="{x:Static vm:Manager.NewItemCommand}"/>
+                    <Button Grid.Row="2" Content="+" FontSize="16" Command="{x:Static vm:Manager.NewItemCommand}"/>
                 </Grid>
                 <Grid Grid.Column="1" DataContext="{Binding Viewer}">
                     <Grid.CommandBindings>

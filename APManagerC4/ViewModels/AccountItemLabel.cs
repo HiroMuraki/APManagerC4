@@ -24,18 +24,12 @@ namespace APManagerC4.ViewModels
             get => _isSelected;
             set => SetProperty(ref _isSelected, value);
         }
-        public bool ReadOnlyMode
-        {
-            get => _readOnlyMode;
-            init => _readOnlyMode = value;
-        }
 
         public void RequestToView()
         {
             var message = new RequestToViewDetailMessage()
             {
                 Guid = Guid,
-                ReadOnlyMode = ReadOnlyMode
             };
             Messenger.Send(message);
         }
@@ -52,7 +46,6 @@ namespace APManagerC4.ViewModels
         }
 
         private readonly Guid _guid;
-        private readonly bool _readOnlyMode;
         private string _title = string.Empty;
         private bool _isSelected;
     }

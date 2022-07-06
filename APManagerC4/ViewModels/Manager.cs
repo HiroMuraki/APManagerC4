@@ -33,6 +33,17 @@ namespace APManagerC4.ViewModels
         public static RoutedCommand NewItemCommand { get; } = new();
         public static RoutedCommand SaveChangesCommand { get; } = new();
 
+        public string GroupKey
+        {
+            get => _groupKey;
+            set
+            {
+                SetProperty(ref _groupKey, value);
+                ReGroup();
+                OnGroupsUpdated();
+            }
+        }
+        public string[] GroupKeys { get; } = { "Category", "Website", "UserName", "Email", "Phone", "LoginPassword" };
         public DataCenter DataCenter { get; }
         public AbstractDataProvider AbstractDataProvider { get; }
         public Predicate<Models.AccountItem>? Filter
@@ -41,42 +52,53 @@ namespace APManagerC4.ViewModels
             set => SetProperty(ref _filter, value);
         }
         public AccountItemLabelGroup[] Groups => _groups.ToArray();
-        
+
         public void FetchData()
         {
+            IEnumerable<Models.LabelInfo> result;
             if (_filter is null)
             {
-                var result = AbstractDataProvider.Retrieve(t => true);
-                GenerateGroups(result, false);
+                result = AbstractDataProvider.Retrieve(t => true);
             }
             else
             {
-                var result = from item in DataCenter.Retrieve(_filter)
-                             select new Models.LabelInfo()
-                             {
-                                 Guid = item.Guid,
-                                 Title = item.Title,
-                                 Category = item.Category
-                             };
-                GenerateGroups(result, true);
+                result = from item in DataCenter.Retrieve(_filter)
+                         select new Models.LabelInfo()
+                         {
+                             Guid = item.Guid,
+                             Title = item.Title,
+                             Category = item.Category
+                         };
             }
+            _groups.Clear();
+            _groups.Add(new AccountItemLabelGroup(Messenger)
+            {
+                Title = string.Empty,
+                Items = result.Select(t => new AccountItemLabel(Messenger)
+                {
+                    Guid = t.Guid,
+                    Title = t.Title
+                }).ToArray()
+            });
 
+            ReGroup();
             SortGroups();
-            OnGroupsModificated();
+            OnGroupsUpdated();
         }
         public void AddItem(Models.AccountItem item)
         {
             /* 获取目标分组的引用（若没有找到则新建），然后让其重新获取数据 */
             DataCenter.Add(item.Guid, item);
-            var group = _groups.FirstOrDefault(g => g?.Title == item.Category, null);
+            var groupTitle = GetTargetGroupTitle(item);
+            var group = _groups.FirstOrDefault(g => g?.Title == groupTitle, null);
             if (group is null)
             {
                 group = new AccountItemLabelGroup(Messenger)
                 {
-                    Title = item.Category
+                    Title = groupTitle
                 };
                 _groups.Add(group);
-                OnGroupsModificated();
+                OnGroupsUpdated();
             }
             UpdateGroupItems(group);
             group.IsExpanded = true;
@@ -98,7 +120,7 @@ namespace APManagerC4.ViewModels
             }
             RemoveEmptyGroups();
             SortGroups();
-            OnGroupsModificated();
+            OnGroupsUpdated();
         }
         public string?[] RetrieveOptions(Func<Models.AccountItem, string?> selector, Predicate<string>? predicate)
         {
@@ -123,19 +145,17 @@ namespace APManagerC4.ViewModels
                 /* 获取更新的AccountItem的Guid所在的AccountLabel与所属组，
                  * 若该AccountItem的所属组与AccountLabel的所属组不同，
                  * 则让当前组与AccountItem所属组的对应Group重新获取数据 */
-
                 var preGroup = _groups.First(g => g.Items.Any(t => t.Guid == e.Guid));
-                var label = preGroup.Items.First(t => t.Guid == e.Guid);
-                var tItem = DataCenter.Retrieve(label.Guid);
+                var targetGroupTitle = GetTargetGroupTitle(e.Data);
 
-                if (preGroup.Title != tItem.Category)
+                if (preGroup.Title != targetGroupTitle)
                 {
                     // 若所属组不存在则创建一个
-                    if (!_groups.Any(t => t.Title == e.Data.Category))
+                    if (!_groups.Any(t => t.Title == targetGroupTitle))
                     {
                         _groups.Add(new AccountItemLabelGroup(Messenger)
                         {
-                            Title = e.Data.Category
+                            Title = targetGroupTitle
                         });
                     }
 
@@ -143,53 +163,35 @@ namespace APManagerC4.ViewModels
                     UpdateGroupItems(preGroup);
                     preGroup.IsExpanded = true;
 
-                    // 查找新组后，新组重新获取数据
-                    var tGroup = _groups.First(g => g.Title == tItem.Category);
+                    // 新组重新获取数据
+                    var tGroup = _groups.First(g => g.Title == targetGroupTitle);
                     UpdateGroupItems(tGroup);
                     tGroup.IsExpanded = true;
-                    tGroup.Items.First(t => t.Guid == tItem.Guid).IsSelected = true; // 让其保持选中状态
+                    tGroup.Items.First(t => t.Guid == e.Guid).IsSelected = true; // 让其保持选中状态
 
                     RemoveEmptyGroups();
                     SortGroups();
-                    OnGroupsModificated();
+                    OnGroupsUpdated();
                 }
             });
         }
 
-        private Predicate<Models.AccountItem>? _filter;
         private readonly List<AccountItemLabelGroup> _groups = new();
-        private void GenerateGroups(IEnumerable<Models.LabelInfo> items, bool readonlyMode)
+        private Predicate<Models.AccountItem>? _filter;
+        private string _groupKey = nameof(Models.AccountItem.Category);
+        private void ReGroup()
         {
-            var dict = new Dictionary<string, List<AccountItemLabel>>();
-            foreach (var item in items)
-            {
-                var vmItem = new AccountItemLabel(Messenger)
-                {
-                    Guid = item.Guid,
-                    Title = item.Title,
-                    ReadOnlyMode = readonlyMode
-                };
-
-                if (dict.TryGetValue(item.Category, out var group))
-                {
-                    group.Add(vmItem);
-                }
-                else
-                {
-                    dict[item.Category] = new List<AccountItemLabel>();
-                    dict[item.Category].Add(vmItem);
-                }
-            }
-
+            var labels = _groups.SelectMany(g => g.Items).ToArray();
             _groups.Clear();
-            foreach (var groupName in dict.Keys)
-            {
-                _groups.Add(new AccountItemLabelGroup(Messenger)
+            _groups.AddRange(
+                from aItem in labels
+                let item = DataCenter.Retrieve(aItem.Guid)
+                group aItem by GetTargetGroupTitle(item) into groups
+                select new AccountItemLabelGroup(Messenger)
                 {
-                    Title = groupName,
-                    Items = dict[groupName].ToArray()
+                    Title = groups.Key,
+                    Items = groups.ToArray()
                 });
-            }
         }
         private void SortGroups()
         {
@@ -210,16 +212,17 @@ namespace APManagerC4.ViewModels
                 }
             }
         }
-        private void OnGroupsModificated()
+        private void OnGroupsUpdated()
         {
             OnPropertyChanged(nameof(Groups));
         }
         private void UpdateGroupItems(AccountItemLabelGroup labelGroup)
         {
-            /* 若过滤函数为空，则只需要获取数据摘要信息即可，
+            /* 若过滤函数为空且按分类分组，则只需要获取数据摘要信息即可，
              * 否则进行完全查找 */
             IEnumerable<AccountItemLabel> result;
-            if (_filter is null)
+
+            if (_filter is null && _groupKey == nameof(Models.AccountItem.Category))
             {
                 result = from item in AbstractDataProvider.Retrieve(t => true)
                          where item.Category == labelGroup.Title
@@ -231,8 +234,8 @@ namespace APManagerC4.ViewModels
             }
             else
             {
-                result = from item in DataCenter.Retrieve(_filter)
-                         where item.Category == labelGroup.Title
+                result = from item in DataCenter.Retrieve(_filter ?? (t => true))
+                         where GetTargetGroupTitle(item) == labelGroup.Title
                          select new AccountItemLabel(Messenger)
                          {
                              Guid = item.Guid,
@@ -240,6 +243,12 @@ namespace APManagerC4.ViewModels
                          };
             }
             labelGroup.Items = result.ToArray();
+        }
+        private string GetTargetGroupTitle(Models.AccountItem item)
+        {
+            var groupProp = typeof(Models.AccountItem).GetProperty(_groupKey);
+            System.Diagnostics.Debug.Assert(groupProp is not null); // assert
+            return groupProp.GetValue(item) as string ?? string.Empty;
         }
     }
 }
