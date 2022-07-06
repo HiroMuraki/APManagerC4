@@ -9,8 +9,8 @@ namespace APManagerC4.ViewModels
 {
     public class Manager : ObservableRecipient
     {
-        public static readonly string DefualtGroupName = "未分组";
-        public static readonly string DefaultItemTitle = "新建条目";
+        public static readonly string DefaultItemCategory = "";
+        public static readonly string DefaultItemTitle = "新建";
 
         class GroupComparer : IComparer<AccountItemLabelGroup>
         {
@@ -21,11 +21,11 @@ namespace APManagerC4.ViewModels
                 ArgumentNullException.ThrowIfNull(x);
                 ArgumentNullException.ThrowIfNull(y);
 
-                if (x == DefualtGroupName && y != DefualtGroupName)
+                if (x == DefaultItemCategory && y != DefaultItemCategory)
                 {
                     return 1;
                 }
-                else if (y == DefualtGroupName && x != DefualtGroupName)
+                else if (y == DefaultItemCategory && x != DefaultItemCategory)
                 {
                     return -1;
                 }

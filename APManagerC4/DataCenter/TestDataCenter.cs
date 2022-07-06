@@ -215,7 +215,7 @@ namespace APManagerC4
 #if BYTES_SERIALIZATION || ALL_SERIALIZATION
             using (var fs = new FileStream("data.dat", FileMode.Create, FileAccess.Write))
             {
-                fs.Write(_bytesSerializer.SerializeToBytes(_data.ToArray()));
+                fs.Write(_bytesSerializer.SerializeToBytes(_data.Values.ToArray()));
             }
 #elif JSON_SERIALIZATION || ALL_SERIALIZATION
             using (var writer = new StreamWriter("data.json"))

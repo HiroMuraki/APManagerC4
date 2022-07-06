@@ -16,7 +16,7 @@ namespace APManagerC4.ViewModels
         }
         public string Title
         {
-            get => _title;
+            get => _title.Replace("_", "__");
             set => SetProperty(ref _title, value);
         }
         public bool IsSelected

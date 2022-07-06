@@ -266,10 +266,17 @@ namespace APManagerC4
                     passwordBox.Focus();
                     return;
                 }
-                _dataCenter.ReEncrypt(pasword);
-                _dataCenter.SaveChanges();
-                string sPassword = new AESTextEncrypter(GetPasswordKey()).Encrypt(pasword);
-                MessageBox.Show($"已保存，请牢记密码凭证：\n{sPassword}", "保存成功", MessageBoxButton.OK, MessageBoxImage.Information);
+                try
+                {
+                    _dataCenter.ReEncrypt(pasword);
+                    _dataCenter.SaveChanges();
+                    string sPassword = new AESTextEncrypter(GetPasswordKey()).Encrypt(pasword);
+                    MessageBox.Show($"已保存，请牢记密码凭证：\n{sPassword}", "保存成功", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch
+                {
+                    MessageBox.Show("当前无法保存至文件，请检查文件是否被占用", "", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
 
             verficationPanel.Visibility = Visibility.Collapsed;
@@ -352,7 +359,7 @@ namespace APManagerC4
             {
                 Guid = Guid.NewGuid(),
                 Title = ViewModels.Manager.DefaultItemTitle,
-                Category = ViewModels.Manager.DefualtGroupName,
+                Category = ViewModels.Manager.DefaultItemCategory,
                 CreationTime = time,
                 UpdateTime = time
             };
