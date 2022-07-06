@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:APManagerC4"
         xmlns:vm="clr-namespace:APManagerC4.ViewModels"
         mc:Ignorable="d" DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
-        Title="AccountStorage" Height="500" Width="750"
+        Title="P-Safe" Height="500" Width="750"
         WindowStartupLocation="CenterScreen" KeyDown="Window_KeyDown" Closing="Window_Closing">
     <Grid>
         <Grid x:Name="mainPanel">
