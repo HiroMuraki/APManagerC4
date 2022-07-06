@@ -170,39 +170,39 @@
                                 <DockPanel Grid.Column="1">
                                     <Label Content="分组" FontSize="18" FontWeight="Bold"/>
                                     <ComboBox TabIndex="2" Text="{Binding GroupName,UpdateSourceTrigger=PropertyChanged}" FontSize="16" IsReadOnly="{Binding ReadOnlyMode}"
-                                              ItemsSource="{Binding Manager.GroupNames,RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
+                                              DropDownOpened="ComboBox_DropDownOpened"/>
                                 </DockPanel>
                             </Grid>
                             <StackPanel Grid.Row="1" Margin="0,0,15,0">
                                 <DockPanel Margin="0,0,0,2">
                                     <Label Content="网址"/>
                                     <Button Content="复制" Command="{Binding CopyTextCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=local:MainWindow}}" CommandParameter="{Binding Website}" DockPanel.Dock="Right"/>
-                                    <ComboBox TabIndex="3" Text="{Binding Website,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding ReadOnlyMode}"/>
+                                    <ComboBox TabIndex="3" Text="{Binding Website,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding ReadOnlyMode}" DropDownOpened="ComboBox_DropDownOpened"/>
                                 </DockPanel>
                                 <DockPanel Margin="0,0,0,2">
                                     <Label Content="昵称"/>
                                     <Button Content="复制" Command="{Binding CopyTextCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=local:MainWindow}}" CommandParameter="{Binding UserName}" DockPanel.Dock="Right"/>
-                                    <ComboBox TabIndex="4" Text="{Binding UserName,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding ReadOnlyMode}"/>
+                                    <ComboBox TabIndex="4" Text="{Binding UserName,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding ReadOnlyMode}" DropDownOpened="ComboBox_DropDownOpened"/>
                                 </DockPanel>
                                 <DockPanel Margin="0,0,0,2">
                                     <Label Content="账号" DockPanel.Dock="Left"/>
                                     <Button Content="复制" Command="{Binding CopyTextCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=local:MainWindow}}" CommandParameter="{Binding LoginName}" DockPanel.Dock="Right"/>
-                                    <ComboBox TabIndex="5" Text="{Binding LoginName,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding ReadOnlyMode}"/>
+                                    <ComboBox TabIndex="5" Text="{Binding LoginName,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding ReadOnlyMode}" DropDownOpened="ComboBox_DropDownOpened"/>
                                 </DockPanel>
                                 <DockPanel Margin="0,0,0,2">
                                     <Label Content="密码"/>
                                     <Button Content="复制" Command="{Binding CopyTextCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=local:MainWindow}}" CommandParameter="{Binding LoginPassword}" DockPanel.Dock="Right"/>
-                                    <ComboBox TabIndex="6" Text="{Binding LoginPassword,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding ReadOnlyMode}"/>
+                                    <ComboBox TabIndex="6" Text="{Binding LoginPassword,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding ReadOnlyMode}" DropDownOpened="ComboBox_DropDownOpened"/>
                                 </DockPanel>
                                 <DockPanel Margin="0,0,0,2">
                                     <Label Content="手机"/>
                                     <Button Content="复制" Command="{Binding CopyTextCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=local:MainWindow}}" CommandParameter="{Binding Phone}" DockPanel.Dock="Right"/>
-                                    <ComboBox TabIndex="7" Text="{Binding Phone,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding ReadOnlyMode}"/>
+                                    <ComboBox TabIndex="7" Text="{Binding Phone,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding ReadOnlyMode}" DropDownOpened="ComboBox_DropDownOpened"/>
                                 </DockPanel>
                                 <DockPanel Margin="0,0,0,2">
                                     <Label Content="邮箱"/>
                                     <Button Content="复制" Command="{Binding CopyTextCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=local:MainWindow}}" CommandParameter="{Binding Email}" DockPanel.Dock="Right"/>
-                                    <ComboBox TabIndex="8" Text="{Binding Email,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding ReadOnlyMode}"/>
+                                    <ComboBox TabIndex="8" Text="{Binding Email,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding ReadOnlyMode}" DropDownOpened="ComboBox_DropDownOpened"/>
                                 </DockPanel>
                             </StackPanel>
                             <TextBox Grid.Row="2" Height="Auto" Margin="10" TabIndex="9" Text="{Binding Remarks,UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" IsReadOnly="{Binding ReadOnlyMode}"

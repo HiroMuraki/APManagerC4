@@ -274,5 +274,21 @@ namespace APManagerC4
                 return false;
             }
         }
+
+        private void ComboBox_DropDownOpened(object sender, EventArgs e)
+        {
+            var combox = (ComboBox)sender;
+            string propName = combox.GetBindingExpression(ComboBox.TextProperty).ResolvedSourcePropertyName;
+            var propInfo = typeof(Models.AccountItem).GetProperty(propName);
+
+            if (propInfo is null)
+            {
+                throw new NullReferenceException($"No such property '{propName}'");
+            }
+
+            combox.ItemsSource = Manager.RetrieveOptions(
+                t => (propInfo.GetValue(t) as string)?.Trim(),
+                p => !string.IsNullOrWhiteSpace(p));
+        }
     }
 }

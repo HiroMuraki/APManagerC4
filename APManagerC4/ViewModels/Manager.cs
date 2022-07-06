@@ -41,7 +41,6 @@ namespace APManagerC4.ViewModels
         public DataCenter DataCenter { get; }
         public AbstractDataProvider AbstractDataProvider { get; }
         public AccountItemLabelGroup[] Groups => _groups.ToArray();
-        public string[] GroupNames => _groups.Select(t => t.GroupName).ToArray();
 
         public void FetchDataIf(Predicate<Models.AccountItem> predicate)
         {
@@ -109,6 +108,18 @@ namespace APManagerC4.ViewModels
             SortGroups();
             OnGroupsModificated();
         }
+        public string?[] RetrieveOptions(Func<Models.AccountItem, string?> selector, Predicate<string>? predicate)
+        {
+            ArgumentNullException.ThrowIfNull(selector);
+
+            var result = from item in DataCenter.Retrieve(t => true)
+                         let value = selector(item)
+                         where predicate?.Invoke(value) ?? true
+                         select value;
+
+            return result.Distinct().ToArray();
+        }
+
 
         public Manager(IMessenger messenger, DataCenter dataCenter, AbstractDataProvider abstractDataProvider) : base(messenger)
         {
@@ -209,7 +220,6 @@ namespace APManagerC4.ViewModels
         private void OnGroupsModificated()
         {
             OnPropertyChanged(nameof(Groups));
-            OnPropertyChanged(nameof(GroupNames));
         }
     }
 }
