@@ -18,17 +18,17 @@
                 _title = value;
             }
         }
-        public string GroupName
+        public string Category
         {
-            get => _groupName;
+            get => _category;
             init
             {
-                _groupName = value;
+                _category = value;
             }
         }
 
         private readonly Guid _guid;
         private readonly string _title = string.Empty;
-        private readonly string _groupName = string.Empty;
+        private readonly string _category = string.Empty;
     }
 }

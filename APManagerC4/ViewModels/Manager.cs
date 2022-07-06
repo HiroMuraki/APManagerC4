@@ -56,7 +56,7 @@ namespace APManagerC4.ViewModels
                              {
                                  Guid = item.Guid,
                                  Title = item.Title,
-                                 GroupName = item.Category
+                                 Category = item.Category
                              };
                 GenerateGroups(result, true);
             }
@@ -170,14 +170,14 @@ namespace APManagerC4.ViewModels
                     ReadOnlyMode = readonlyMode
                 };
 
-                if (dict.TryGetValue(item.GroupName, out var group))
+                if (dict.TryGetValue(item.Category, out var group))
                 {
                     group.Add(vmItem);
                 }
                 else
                 {
-                    dict[item.GroupName] = new List<AccountItemLabel>();
-                    dict[item.GroupName].Add(vmItem);
+                    dict[item.Category] = new List<AccountItemLabel>();
+                    dict[item.Category].Add(vmItem);
                 }
             }
 
@@ -222,7 +222,7 @@ namespace APManagerC4.ViewModels
             if (_filter is null)
             {
                 result = from item in AbstractDataProvider.Retrieve(t => true)
-                         where item.GroupName == labelGroup.Title
+                         where item.Category == labelGroup.Title
                          select new AccountItemLabel(Messenger)
                          {
                              Guid = item.Guid,

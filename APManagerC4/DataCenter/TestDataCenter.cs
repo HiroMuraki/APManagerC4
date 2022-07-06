@@ -65,7 +65,7 @@ namespace APManagerC4
                 {
                     Guid = item.Guid,
                     Title = DecryptString(item.Title),
-                    GroupName = DecryptString(item.Category)
+                    Category = DecryptString(item.Category)
                 };
             }
 
