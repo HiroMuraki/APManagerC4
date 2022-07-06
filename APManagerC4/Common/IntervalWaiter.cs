@@ -5,17 +5,15 @@
     /// </summary>
     class IntervalWaiter
     {
-        public TimeSpan Interval { get; init; }
-
         /// <summary>
         /// 进入等待
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> Wait()
+        public async Task<bool> Wait(TimeSpan waitingTime)
         {
             try
             {
-                await Task.Delay(Interval, _cts.Token);
+                await Task.Delay(waitingTime, _cts.Token);
                 return true;
             }
             catch (TaskCanceledException)

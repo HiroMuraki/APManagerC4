@@ -151,6 +151,11 @@
                                     <Setter Property="VerticalContentAlignment" Value="Center" />
                                     <Setter Property="Height" Value="25" />
                                     <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsReadOnly" Value="True">
+                                            <Setter Property="IsEnabled" Value="False" />
+                                        </Trigger>
+                                    </Style.Triggers>
                                 </Style>
                             </Grid.Resources>
                             <Grid.RowDefinitions>
@@ -228,7 +233,7 @@
                             <ColumnDefinition/>
                             <ColumnDefinition Width="50"/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" Content="应用更改" TabIndex="10" Command="{x:Static vm:AccountItemViewer.ApplyModificationCommand}"/>
+                        <Button Grid.Column="0" Content="提交更改" TabIndex="10" Command="{x:Static vm:AccountItemViewer.ApplyModificationCommand}"/>
                         <Button Grid.Column="1" Content="删除" Command="{x:Static vm:AccountItemViewer.DeleteItemCommand}"/>
                     </Grid>
                 </Grid>

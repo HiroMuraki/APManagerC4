@@ -117,11 +117,10 @@ namespace APManagerC4
         private async void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             _searchWaiter.Reset();
-            bool ok = await _searchWaiter.Wait();
-            if (!ok)
+            if (!await _searchWaiter.Wait(TimeSpan.FromMinutes(220)))
             {
                 return;
-            }
+            };
 
             Search(((TextBox)sender).Text.ToUpper());
         }
@@ -160,9 +159,9 @@ namespace APManagerC4
         }
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            if (_dataCenter.HasUnsavedChanges)
+            if (_dataCenter.HasUnsavedChanges || Viewer.HasUnsavedChanges)
             {
-                var r = MessageBox.Show($"修改尚未保存，是否关闭？", "警告", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                var r = MessageBox.Show($"有尚未保存的修改，是否关闭？", "警告", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
                 if (r != MessageBoxResult.OK)
                 {
                     e.Cancel = true;
@@ -171,7 +170,7 @@ namespace APManagerC4
         }
 
         private bool _initialized;
-        private readonly IntervalWaiter _searchWaiter = new() { Interval = TimeSpan.FromMilliseconds(300) };
+        private readonly IntervalWaiter _searchWaiter = new();
         private readonly TestDataCenter _dataCenter;
         private void RegisterCommand(ICommand command, ExecutedRoutedEventHandler executed, CanExecuteRoutedEventHandler canExecute)
         {
