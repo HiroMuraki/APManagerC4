@@ -10,11 +10,7 @@ namespace APManagerC4.ViewModels
             get => _title;
             set => SetProperty(ref _title, value);
         }
-        public AccountItemLabel[] Items
-        {
-            get => _items;
-            set => SetProperty(ref _items, value);
-        }
+        public ObservableList<AccountItemLabel> Items { get; init; } = new();
         public bool IsExpanded
         {
             get => _isExpanded;
@@ -28,6 +24,5 @@ namespace APManagerC4.ViewModels
 
         private bool _isExpanded;
         private string _title = string.Empty;
-        private AccountItemLabel[] _items = Array.Empty<AccountItemLabel>();
     }
 }
