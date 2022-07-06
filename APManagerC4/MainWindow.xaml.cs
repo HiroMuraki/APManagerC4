@@ -117,7 +117,7 @@ namespace APManagerC4
         private async void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             _searchWaiter.Reset();
-            if (!await _searchWaiter.Wait(TimeSpan.FromMinutes(220)))
+            if (!await _searchWaiter.Wait(TimeSpan.FromMilliseconds(220)))
             {
                 return;
             };
