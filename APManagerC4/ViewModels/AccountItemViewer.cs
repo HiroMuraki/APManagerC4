@@ -117,7 +117,7 @@ namespace APManagerC4.ViewModels
                 UpdateTime = UpdateTime.Ticks
             };
 
-            _dataCenter.Upate(_guid, _originData);
+            _dataCenter.Update(_guid, _originData);
             HasUnsavedChanges = false;
 
             Messenger.Send(new AccountItemUpdatedMessage()

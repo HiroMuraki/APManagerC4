@@ -132,24 +132,23 @@ namespace APManagerC4
 
         public void Add(Guid guid, AccountItem item)
         {
-            _data.Add(_itemEncrypter.GetEncrypted(item)!);
+            _data[item.Guid] = _itemEncrypter.GetEncrypted(item)!;
             HasUnsavedChanges = true;
         }
         public void Delete(Guid guid)
         {
-            if (_data.Remove(_data.First(t => t.Guid == guid)))
+            if (_data.Remove(guid))
             {
                 HasUnsavedChanges = true;
             }
         }
         public AccountItem Retrieve(Guid guid)
         {
-            var result = _data.FirstOrDefault(t => t?.Guid == guid, null);
-            return _itemEncrypter.DecryptToAccountItem(result) ?? throw new ArgumentException("No data for " + guid);
+            return _itemEncrypter.DecryptToAccountItem(_data[guid])!;
         }
         public IEnumerable<AccountItem> Retrieve(Predicate<AccountItem>? predicate)
         {
-            var result = from item in _data
+            var result = from item in _data.Values
                          let data = _itemEncrypter.DecryptToAccountItem(item)
                          where predicate?.Invoke(data) ?? true
                          select data;
@@ -161,7 +160,7 @@ namespace APManagerC4
         }
         public IEnumerable<LabelInfo> Retrieve(Predicate<LabelInfo>? predicate)
         {
-            var result = from item in _data
+            var result = from item in _data.Values
                          let data = _itemEncrypter.DecryptToLabelInfo(item)
                          where predicate?.Invoke(data) ?? true
                          select data;
@@ -171,14 +170,9 @@ namespace APManagerC4
                 yield return item;
             }
         }
-        public void Upate(Guid guid, AccountItem newData)
+        public void Update(Guid guid, AccountItem newData)
         {
-            var index = _data.FindIndex(0, t => t.Guid == guid);
-            if (index == -1)
-            {
-                throw new ArgumentException("No data for " + guid);
-            }
-            _data[index] = _itemEncrypter.GetEncrypted(newData)!;
+            _data[guid] = _itemEncrypter.GetEncrypted(newData)!;
             HasUnsavedChanges = true;
         }
 
@@ -197,7 +191,7 @@ namespace APManagerC4
                     var buffer = new byte[fs.Length];
                     fs.Read(buffer, 0, buffer.Length);
                     var data = _bytesSerializer.DeserializeFromBytes<EncryptedAccountItem[]>(buffer);
-                    _data = new(data);
+                    _data = data.ToDictionary(d => d.Guid);
                 }
             }
 #elif JSON_SERIALIZATION || ALL_SERIALIZATION
@@ -210,7 +204,7 @@ namespace APManagerC4
                     {
                         throw new JsonException();
                     }
-                    _data = new(data);
+                    _data = data.ToDictionary(d => d.Guid);
                 }
             }
 #endif
@@ -241,12 +235,12 @@ namespace APManagerC4
             {
                 Encrypter = new AESTextEncrypter(PreprocessKey(password))
             };
-            _data = new List<EncryptedAccountItem>();
+            _data = new Dictionary<Guid, EncryptedAccountItem>();
 
-            foreach (var item in preData)
+            foreach (var item in preData.Values)
             {
                 var data = preEncrypter.DecryptToAccountItem(item);
-                _data.Add(_itemEncrypter.GetEncrypted(data)!);
+                _data[item.Guid] = _itemEncrypter.GetEncrypted(data)!;
             }
 
             HasUnsavedChanges = true;
@@ -254,7 +248,7 @@ namespace APManagerC4
 
         private readonly BytesSerializer _bytesSerializer = new() { Encoding = Encoding.ASCII };
         private ItemEncrypter _itemEncrypter = new();
-        private List<EncryptedAccountItem> _data = new();
+        private Dictionary<Guid, EncryptedAccountItem> _data = new();
         private static byte[] PreprocessKey(string password)
         {
             using (var hashFunc = SHA256.Create())

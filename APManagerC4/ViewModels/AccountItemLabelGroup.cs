@@ -5,16 +5,6 @@ namespace APManagerC4.ViewModels
 {
     public class AccountItemLabelGroup : ObservableRecipient
     {
-        class ItemComparer : IComparer<AccountItemLabel>
-        {
-            public static ItemComparer Default { get; } = new();
-
-            public int Compare(AccountItemLabel? x, AccountItemLabel? y)
-            {
-                return x?.Title.CompareTo(y?.Title) ?? -1;
-            }
-        }
-
         public string Title
         {
             get => _title;
@@ -29,11 +19,6 @@ namespace APManagerC4.ViewModels
         {
             get => _isExpanded;
             set => SetProperty(ref _isExpanded, value);
-        }
-
-        public void SortItems()
-        {
-            Array.Sort(Items, ItemComparer.Default);
         }
 
         public AccountItemLabelGroup(IMessenger messenger) : base(messenger)
