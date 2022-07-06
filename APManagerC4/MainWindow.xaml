@@ -233,7 +233,7 @@
                             <ColumnDefinition/>
                             <ColumnDefinition Width="50"/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" Content="提交更改" TabIndex="10" Command="{x:Static vm:AccountItemViewer.ApplyModificationCommand}"/>
+                        <Button Grid.Column="0" Content="{Binding SaveDataCommandText, RelativeSource={RelativeSource AncestorType=local:MainWindow}}" TabIndex="10" Command="{x:Static vm:AccountItemViewer.ApplyModificationCommand}"/>
                         <Button Grid.Column="1" Content="删除" Command="{x:Static vm:AccountItemViewer.DeleteItemCommand}"/>
                     </Grid>
                 </Grid>

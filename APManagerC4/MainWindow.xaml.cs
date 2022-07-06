@@ -12,9 +12,23 @@ namespace APManagerC4
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static readonly DependencyProperty SaveDataCommandTextProperty =
+            DependencyProperty.Register(nameof(SaveDataCommandText), typeof(string), typeof(MainWindow), new PropertyMetadata(string.Empty));
+
         public RoutedCommand SaveDataCommand { get; } = new();
         public RoutedCommand CopyTextCommand { get; } = new();
 
+        public string SaveDataCommandText
+        {
+            get
+            {
+                return (string)GetValue(SaveDataCommandTextProperty);
+            }
+            set
+            {
+                SetValue(SaveDataCommandTextProperty, value);
+            }
+        }
         public int MinimumPasswordLength => 8;
         public ViewModels.Manager Manager { get; }
         public ViewModels.AccountItemViewer Viewer { get; }
@@ -24,6 +38,20 @@ namespace APManagerC4
             _dataCenter = new TestDataCenter();
             Manager = new ViewModels.Manager(WeakReferenceMessenger.Default, _dataCenter, _dataCenter);
             Viewer = new ViewModels.AccountItemViewer(WeakReferenceMessenger.Default, _dataCenter);
+            Viewer.PropertyChanged += (sender, e) =>
+            {
+                if (e.PropertyName == nameof(Viewer.HasItemLoaded))
+                {
+                    if (Viewer.HasItemLoaded)
+                    {
+                        SaveDataCommandText = "提交更改";
+                    }
+                    else
+                    {
+                        SaveDataCommandText = "添加";
+                    }
+                }
+            };
 
             RegisterCommand(SaveDataCommand, (_, _) => VerfiyPassword(), (_, e) => e.CanExecute = true);
             RegisterCommand(CopyTextCommand,
@@ -46,6 +74,7 @@ namespace APManagerC4
 
             Loaded += (sender, e) =>
             {
+                Viewer.Unload();
                 ShowVerficationPanel();
             };
         }
@@ -112,7 +141,17 @@ namespace APManagerC4
         }
         private void NewItemCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            Manager.CreateNewItem();
+            /* 新建一个Models.AccountItem并写入DataCenter */
+            long time = DateTime.Now.Ticks;
+            var model = new Models.AccountItem()
+            {
+                Guid = Guid.NewGuid(),
+                Title = ViewModels.Manager.DefaultItemTitle,
+                GroupName = ViewModels.Manager.DefualtGroupName,
+                CreationTime = time,
+                UpdateTime = time
+            };
+            Manager.AddItem(model);
         }
         private void NewItemCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {

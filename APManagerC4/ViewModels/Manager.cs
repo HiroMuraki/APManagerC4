@@ -64,20 +64,6 @@ namespace APManagerC4.ViewModels
             SortGroups();
             OnGroupsModificated();
         }
-        public void CreateNewItem()
-        {
-            /* 新建一个Models.AccountItem并写入DataCenter */
-            long time = DateTime.Now.Ticks;
-            var model = new Models.AccountItem()
-            {
-                Guid = Guid.NewGuid(),
-                Title = DefaultItemTitle,
-                GroupName = DefualtGroupName,
-                CreationTime = time,
-                UpdateTime = time
-            };
-            AddItem(model);
-        }
         public void AddItem(Models.AccountItem item)
         {
             /* 获取目标分组的引用（若没有找到则新建），然后让其重新获取数据 */
