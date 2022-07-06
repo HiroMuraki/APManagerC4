@@ -25,27 +25,22 @@ namespace APManagerC4
             Manager = new ViewModels.Manager(WeakReferenceMessenger.Default, _dataCenter, _dataCenter);
             Viewer = new ViewModels.AccountItemViewer(WeakReferenceMessenger.Default, _dataCenter);
 
-            {
-                RegisterCommand(SaveDataCommand, (_, _) => VerfiyPassword(), (_, e) => e.CanExecute = true);
-                RegisterCommand(CopyTextCommand, (_, e) =>
+            RegisterCommand(SaveDataCommand, (_, _) => VerfiyPassword(), (_, e) => e.CanExecute = true);
+            RegisterCommand(CopyTextCommand,
+                (_, e) =>
+                {
+                    try
                     {
-                        string? text = e.Parameter as string;
-                        if (!string.IsNullOrEmpty(text))
-                        {
-                            try
-                            {
-                                Clipboard.SetText(text);
-                            }
-                            catch
-                            {
+                        Clipboard.SetText(e.Parameter as string ?? string.Empty);
+                    }
+                    catch
+                    {
 
-                                MessageBox.Show("当前无法将文本复制到剪切板，请稍后再试", "", MessageBoxButton.OK);
-                            }
-                        }
-                    },
-                    (_, e) => e.CanExecute = Viewer.HasItemLoaded
-                );
-            }
+                        MessageBox.Show("当前无法将文本复制到剪切板，请稍后再试", "", MessageBoxButton.OK);
+                    }
+                },
+                (_, e) => e.CanExecute = !string.IsNullOrEmpty(e.Parameter as string)
+            );
 
             InitializeComponent();
 
@@ -78,11 +73,33 @@ namespace APManagerC4
         }
         private void ApplyModification_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            Viewer.SaveChanges();
+            if (Viewer.HasItemLoaded)
+            {
+                Viewer.SaveChanges();
+            }
+            else
+            {
+                var model = new Models.AccountItem()
+                {
+                    Guid = Viewer.Guid,
+                    Title = Viewer.Title,
+                    Website = Viewer.Website,
+                    GroupName = Viewer.GroupName,
+                    UserName = Viewer.UserName,
+                    LoginName = Viewer.LoginName,
+                    LoginPassword = Viewer.LoginPassword,
+                    Email = Viewer.Email,
+                    Phone = Viewer.Phone,
+                    Remarks = Viewer.Remarks,
+                    CreationTime = Viewer.CreationTime.Ticks,
+                    UpdateTime = Viewer.UpdateTime.Ticks
+                };
+                Manager.AddItem(model);
+            }
         }
         private void ApplyModification_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = Viewer.HasItemLoaded && Viewer.HasUnsavedChanges;
+            e.CanExecute = Viewer.HasUnsavedChanges;
         }
         private void DeleteItemCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -95,7 +112,7 @@ namespace APManagerC4
         }
         private void NewItemCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            Manager.NewItem();
+            Manager.CreateNewItem();
         }
         private void NewItemCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {

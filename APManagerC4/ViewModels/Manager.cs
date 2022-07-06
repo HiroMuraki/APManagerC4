@@ -64,10 +64,9 @@ namespace APManagerC4.ViewModels
             SortGroups();
             OnGroupsModificated();
         }
-        public void NewItem()
+        public void CreateNewItem()
         {
-            /* 新建一个Models.AccountItem并写入DataCenter
-             * 获取默认分组的引用（若没有找到则新建），然后让其重新获取数据 */
+            /* 新建一个Models.AccountItem并写入DataCenter */
             long time = DateTime.Now.Ticks;
             var model = new Models.AccountItem()
             {
@@ -77,14 +76,18 @@ namespace APManagerC4.ViewModels
                 CreationTime = time,
                 UpdateTime = time
             };
-            DataCenter.Add(model.Guid, model);
-
-            var group = _groups.FirstOrDefault(g => g?.GroupName == DefualtGroupName, null);
+            AddItem(model);
+        }
+        public void AddItem(Models.AccountItem item)
+        {
+            /* 获取目标分组的引用（若没有找到则新建），然后让其重新获取数据 */
+            DataCenter.Add(item.Guid, item);
+            var group = _groups.FirstOrDefault(g => g?.GroupName == item.GroupName, null);
             if (group is null)
             {
                 group = new AccountItemLabelGroup(Messenger)
                 {
-                    GroupName = DefualtGroupName
+                    GroupName = item.GroupName
                 };
                 _groups.Add(group);
                 OnGroupsModificated();
@@ -92,7 +95,7 @@ namespace APManagerC4.ViewModels
             UpdateGroupItems(group);
             group.IsExpanded = true;
 
-            var newItem = group.Items.First(t => t.Guid == model.Guid);
+            var newItem = group.Items.First(t => t.Guid == item.Guid);
             newItem.IsSelected = true;
             newItem.RequestToView();
         }
