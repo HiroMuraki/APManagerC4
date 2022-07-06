@@ -9,8 +9,8 @@ namespace APManagerC4
     /// </summary>
     class AESTextEncrypter
     {
-        public const int KeyLength = 256 / 8; // AES密钥长度
-        public const int IVLength = 128 / 8; // IV长度
+        public static readonly int KeyLength = 256 / 8; // AES密钥长度
+        public static readonly int IVLength = 128 / 8; // IV长度
 
         public string Encrypt(string source)
         {

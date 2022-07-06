@@ -173,7 +173,7 @@
                                     <TextBox TabIndex="1" Text="{Binding Title,UpdateSourceTrigger=PropertyChanged}" FontSize="16"/>
                                 </DockPanel>
                                 <DockPanel Grid.Column="1">
-                                    <Label Content="分组" FontSize="18" FontWeight="Bold"/>
+                                    <Label Content="分类" FontSize="18" FontWeight="Bold"/>
                                     <ComboBox TabIndex="2" Text="{Binding Category,UpdateSourceTrigger=PropertyChanged}" FontSize="16" DropDownOpened="ComboBox_DropDownOpened"/>
                                 </DockPanel>
                             </Grid>
