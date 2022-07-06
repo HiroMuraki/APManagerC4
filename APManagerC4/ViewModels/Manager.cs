@@ -41,6 +41,7 @@ namespace APManagerC4.ViewModels
         public DataCenter DataCenter { get; }
         public AbstractDataProvider AbstractDataProvider { get; }
         public AccountItemLabelGroup[] Groups => _groups.ToArray();
+        public string[] GroupNames => _groups.Select(t => t.GroupName).ToArray();
 
         public void FetchDataIf(Predicate<Models.AccountItem> predicate)
         {
@@ -208,6 +209,7 @@ namespace APManagerC4.ViewModels
         private void OnGroupsModificated()
         {
             OnPropertyChanged(nameof(Groups));
+            OnPropertyChanged(nameof(GroupNames));
         }
     }
 }
