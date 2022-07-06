@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
-using AbstractDataProvider = APManagerC4.IDataProvider<APManagerC4.Models.LabelInfo>;
 
 namespace APManagerC4.ViewModels
 {
@@ -16,10 +15,10 @@ namespace APManagerC4.ViewModels
             }
         }
 
-        public string GroupName
+        public string Title
         {
-            get => _groupName;
-            set => SetProperty(ref _groupName, value);
+            get => _title;
+            set => SetProperty(ref _title, value);
         }
         public AccountItemLabel[] Items
         {
@@ -43,7 +42,7 @@ namespace APManagerC4.ViewModels
         }
 
         private bool _isExpanded;
-        private string _groupName = string.Empty;
+        private string _title = string.Empty;
         private AccountItemLabel[] _items = Array.Empty<AccountItemLabel>();
     }
 }

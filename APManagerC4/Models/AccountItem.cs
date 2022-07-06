@@ -13,12 +13,12 @@
                 _guid = value;
             }
         }
-        public string GroupName
+        public string Category
         {
-            get => _groupName;
+            get => _category;
             init
             {
-                _groupName = value;
+                _category = value;
             }
         }
         public string Website
@@ -103,7 +103,7 @@
         }
 
         private readonly Guid _guid;
-        private readonly string _groupName = string.Empty;
+        private readonly string _category = string.Empty;
         private readonly string _website = string.Empty;
         private readonly string _title = string.Empty;
         private readonly string _userName = string.Empty;

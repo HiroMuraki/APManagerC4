@@ -113,7 +113,7 @@ namespace APManagerC4
                     Guid = Viewer.Guid,
                     Title = Viewer.Title,
                     Website = Viewer.Website,
-                    GroupName = Viewer.GroupName,
+                    Category = Viewer.Category,
                     UserName = Viewer.UserName,
                     LoginName = Viewer.LoginName,
                     LoginPassword = Viewer.LoginPassword,
@@ -141,17 +141,7 @@ namespace APManagerC4
         }
         private void NewItemCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            /* 新建一个Models.AccountItem并写入DataCenter */
-            long time = DateTime.Now.Ticks;
-            var model = new Models.AccountItem()
-            {
-                Guid = Guid.NewGuid(),
-                Title = ViewModels.Manager.DefaultItemTitle,
-                GroupName = ViewModels.Manager.DefualtGroupName,
-                CreationTime = time,
-                UpdateTime = time
-            };
-            Manager.AddItem(model);
+            TryCreateNewAccountItem();
         }
         private void NewItemCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -206,6 +196,10 @@ namespace APManagerC4
                 else if (e.Key == Key.F)
                 {
                     searchBox.Focus();
+                }
+                else if (e.Key == Key.N)
+                {
+                    TryCreateNewAccountItem();
                 }
             }
             else if (!_initialized && e.Key == Key.Enter)
@@ -345,6 +339,25 @@ namespace APManagerC4
 
                 return false;
             }
+        }
+        private bool TryCreateNewAccountItem()
+        {
+            if (Manager.Filter is not null)
+            {
+                return false;
+            }
+            /* 新建一个Models.AccountItem并写入DataCenter */
+            long time = DateTime.Now.Ticks;
+            var model = new Models.AccountItem()
+            {
+                Guid = Guid.NewGuid(),
+                Title = ViewModels.Manager.DefaultItemTitle,
+                Category = ViewModels.Manager.DefualtGroupName,
+                CreationTime = time,
+                UpdateTime = time
+            };
+            Manager.AddItem(model);
+            return true;
         }
     }
 }

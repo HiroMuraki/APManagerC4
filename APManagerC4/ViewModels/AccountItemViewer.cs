@@ -16,10 +16,10 @@ namespace APManagerC4.ViewModels
             get => _guid;
             set => SetProperty(ref _guid, value);
         }
-        public string GroupName
+        public string Category
         {
-            get => _groupName;
-            set => SetProperty(ref _groupName, value);
+            get => _category;
+            set => SetProperty(ref _category, value);
         }
         public string Website
         {
@@ -105,7 +105,7 @@ namespace APManagerC4.ViewModels
             {
                 Guid = Guid,
                 Website = Website,
-                GroupName = GroupName,
+                Category = Category,
                 Title = Title,
                 UserName = UserName,
                 LoginName = LoginName,
@@ -159,8 +159,8 @@ namespace APManagerC4.ViewModels
         private bool _hasUnsavedChanges;
         private Models.AccountItem _originData = _default;
         private Guid _guid;
-        private string _groupName = string.Empty;
         private string _website = string.Empty;
+        private string _category = string.Empty;
         private string _title = string.Empty;
         private string _userName = string.Empty;
         private string _loginName = string.Empty;
@@ -174,7 +174,7 @@ namespace APManagerC4.ViewModels
         {
             _originData = data;
             Guid = data.Guid;
-            GroupName = data.GroupName;
+            Category = data.Category;
             Website = data.Website;
             Title = data.Title;
             UserName = data.UserName;

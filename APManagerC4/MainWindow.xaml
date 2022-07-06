@@ -78,7 +78,7 @@
                         <ItemsControl ItemsSource="{Binding Groups}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="{x:Type vm:AccountItemLabelGroup}">
-                                    <Expander Header="{Binding GroupName}" IsExpanded="{Binding IsExpanded}">
+                                    <Expander Header="{Binding Title}" IsExpanded="{Binding IsExpanded}">
                                         <ItemsControl ItemsSource="{Binding Items}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate DataType="{x:Type vm:AccountItemLabel}">
@@ -174,7 +174,7 @@
                                 </DockPanel>
                                 <DockPanel Grid.Column="1">
                                     <Label Content="分组" FontSize="18" FontWeight="Bold"/>
-                                    <ComboBox TabIndex="2" Text="{Binding GroupName,UpdateSourceTrigger=PropertyChanged}" FontSize="16" DropDownOpened="ComboBox_DropDownOpened"/>
+                                    <ComboBox TabIndex="2" Text="{Binding Category,UpdateSourceTrigger=PropertyChanged}" FontSize="16" DropDownOpened="ComboBox_DropDownOpened"/>
                                 </DockPanel>
                             </Grid>
                             <StackPanel Grid.Row="1" Margin="0,0,15,0">

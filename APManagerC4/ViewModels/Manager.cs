@@ -18,15 +18,15 @@ namespace APManagerC4.ViewModels
 
             public int Compare(AccountItemLabelGroup? x, AccountItemLabelGroup? y)
             {
-                if (x?.GroupName == DefualtGroupName && y?.GroupName != DefualtGroupName)
+                if (x?.Title == DefualtGroupName && y?.Title != DefualtGroupName)
                 {
                     return 1;
                 }
-                else if (y?.GroupName == DefualtGroupName && x?.GroupName != DefualtGroupName)
+                else if (y?.Title == DefualtGroupName && x?.Title != DefualtGroupName)
                 {
                     return -1;
                 }
-                return x?.GroupName.CompareTo(y?.GroupName) ?? -1;
+                return x?.Title.CompareTo(y?.Title) ?? -1;
             }
         }
 
@@ -41,7 +41,7 @@ namespace APManagerC4.ViewModels
             set => SetProperty(ref _filter, value);
         }
         public AccountItemLabelGroup[] Groups => _groups.ToArray();
-
+        
         public void FetchData()
         {
             if (_filter is null)
@@ -56,7 +56,7 @@ namespace APManagerC4.ViewModels
                              {
                                  Guid = item.Guid,
                                  Title = item.Title,
-                                 GroupName = item.GroupName
+                                 GroupName = item.Category
                              };
                 GenerateGroups(result, true);
             }
@@ -68,12 +68,12 @@ namespace APManagerC4.ViewModels
         {
             /* 获取目标分组的引用（若没有找到则新建），然后让其重新获取数据 */
             DataCenter.Add(item.Guid, item);
-            var group = _groups.FirstOrDefault(g => g?.GroupName == item.GroupName, null);
+            var group = _groups.FirstOrDefault(g => g?.Title == item.Category, null);
             if (group is null)
             {
                 group = new AccountItemLabelGroup(Messenger)
                 {
-                    GroupName = item.GroupName
+                    Title = item.Category
                 };
                 _groups.Add(group);
                 OnGroupsModificated();
@@ -128,14 +128,14 @@ namespace APManagerC4.ViewModels
                 var label = preGroup.Items.First(t => t.Guid == e.Guid);
                 var tItem = DataCenter.Retrieve(label.Guid);
 
-                if (preGroup.GroupName != tItem.GroupName)
+                if (preGroup.Title != tItem.Category)
                 {
                     // 若所属组不存在则创建一个
-                    if (!_groups.Any(t => t.GroupName == e.Data.GroupName))
+                    if (!_groups.Any(t => t.Title == e.Data.Category))
                     {
                         _groups.Add(new AccountItemLabelGroup(Messenger)
                         {
-                            GroupName = e.Data.GroupName
+                            Title = e.Data.Category
                         });
                     }
 
@@ -144,7 +144,7 @@ namespace APManagerC4.ViewModels
                     preGroup.IsExpanded = true;
 
                     // 查找新组后，新组重新获取数据
-                    var tGroup = _groups.First(g => g.GroupName == tItem.GroupName);
+                    var tGroup = _groups.First(g => g.Title == tItem.Category);
                     UpdateGroupItems(tGroup);
                     tGroup.IsExpanded = true;
                     tGroup.Items.First(t => t.Guid == tItem.Guid).IsSelected = true; // 让其保持选中状态
@@ -186,7 +186,7 @@ namespace APManagerC4.ViewModels
             {
                 _groups.Add(new AccountItemLabelGroup(Messenger)
                 {
-                    GroupName = groupName,
+                    Title = groupName,
                     Items = dict[groupName].ToArray()
                 });
             }
@@ -222,7 +222,7 @@ namespace APManagerC4.ViewModels
             if (_filter is null)
             {
                 result = from item in AbstractDataProvider.Retrieve(t => true)
-                         where item.GroupName == labelGroup.GroupName
+                         where item.GroupName == labelGroup.Title
                          select new AccountItemLabel(Messenger)
                          {
                              Guid = item.Guid,
@@ -232,7 +232,7 @@ namespace APManagerC4.ViewModels
             else
             {
                 result = from item in DataCenter.Retrieve(_filter)
-                         where item.GroupName == labelGroup.GroupName
+                         where item.Category == labelGroup.Title
                          select new AccountItemLabel(Messenger)
                          {
                              Guid = item.Guid,

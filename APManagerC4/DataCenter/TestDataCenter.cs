@@ -26,7 +26,7 @@ namespace APManagerC4
                     Guid = item.Guid,
                     Title = EncryptString(item.Title),
                     Website = EncryptString(item.Website),
-                    GroupName = EncryptString(item.GroupName),
+                    Category = EncryptString(item.Category),
                     UserName = EncryptString(item.UserName),
                     LoginName = EncryptString(item.LoginName),
                     LoginPassword = EncryptString(item.LoginPassword),
@@ -45,7 +45,7 @@ namespace APManagerC4
                 {
                     Guid = item.Guid,
                     Title = DecryptString(item.Title),
-                    GroupName = DecryptString(item.GroupName),
+                    Category = DecryptString(item.Category),
                     Email = DecryptString(item.Email),
                     LoginName = DecryptString(item.LoginName),
                     LoginPassword = DecryptString(item.LoginPassword),
@@ -65,7 +65,7 @@ namespace APManagerC4
                 {
                     Guid = item.Guid,
                     Title = DecryptString(item.Title),
-                    GroupName = DecryptString(item.GroupName)
+                    GroupName = DecryptString(item.Category)
                 };
             }
 
@@ -92,7 +92,7 @@ namespace APManagerC4
         {
             [BytesIncluded(0)] string _title = string.Empty;
             [BytesIncluded(1)] string _website = string.Empty;
-            [BytesIncluded(2)] string _groupName = string.Empty;
+            [BytesIncluded(2)] string _category = string.Empty;
             [BytesIncluded(3)] string _userName = string.Empty;
             [BytesIncluded(4)] string _loginName = string.Empty;
             [BytesIncluded(5)] string _loginPassword = string.Empty;
@@ -109,7 +109,7 @@ namespace APManagerC4
             [Order(1), PropertyName("website")]
             public string Website { get => _website; init => _website = value; }
             [Order(2), PropertyName("groupName")]
-            public string GroupName { get => _groupName; init => _groupName = value; }
+            public string Category { get => _category; init => _category = value; }
             [Order(3), PropertyName("userName")]
             public string UserName { get => _userName; init => _userName = value; }
             [Order(4), PropertyName("loginName")]
