@@ -70,7 +70,7 @@ namespace APManagerC4
                     return;
                 }
             }
-            ((ViewModels.AccountItemLabel)e.Parameter).RequestToView(Manager.HasFilter);
+            ((ViewModels.AccountItemLabel)e.Parameter).RequestToView();
         }
         private void RequestToViewCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -82,7 +82,7 @@ namespace APManagerC4
         }
         private void ApplyModification_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = Viewer.HasItemLoaded && !Viewer.ReadOnlyMode && Viewer.HasUnsavedChanges;
+            e.CanExecute = Viewer.HasItemLoaded && Viewer.HasUnsavedChanges;
         }
         private void DeleteItemCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -91,7 +91,7 @@ namespace APManagerC4
         }
         private void DeleteItemCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = Viewer.HasItemLoaded && !Viewer.ReadOnlyMode;
+            e.CanExecute = Viewer.HasItemLoaded;
         }
         private void NewItemCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -99,7 +99,7 @@ namespace APManagerC4
         }
         private void NewItemCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = !Manager.HasFilter;
+            e.CanExecute = Manager.Filter is null;
         }
         private void SaveChangesCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -245,18 +245,20 @@ namespace APManagerC4
         {
             if (string.IsNullOrEmpty(pattern))
             {
+                Manager.Filter = null;
                 Viewer.Unload();
                 Manager.FetchData();
             }
             else
             {
                 var regexs = from i in Regex.Split(pattern, @"[\s]+") select new Regex(i);
-                Manager.FetchDataIf(t => IsPatternMatched(regexs.ToArray(), t));
+                Manager.Filter = t => IsPatternMatched(regexs.ToArray(), t);
+                Manager.FetchData();
                 if (Manager.Groups.Any())
                 {
                     var t = Manager.Groups.First().Items.First();
                     t.IsSelected = true;
-                    t.RequestToView(true);
+                    t.RequestToView();
                     foreach (var group in Manager.Groups)
                     {
                         group.IsExpanded = true;

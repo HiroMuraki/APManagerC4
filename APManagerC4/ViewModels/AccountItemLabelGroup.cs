@@ -32,15 +32,6 @@ namespace APManagerC4.ViewModels
             set => SetProperty(ref _isExpanded, value);
         }
 
-        public void Fetch(AbstractDataProvider dataProvider)
-        {
-            Items = (from i in dataProvider.Retrieve(item => item.GroupName == GroupName)
-                     select new AccountItemLabel(Messenger)
-                     {
-                         Guid = i.Guid,
-                         Title = i.Title
-                     }).ToArray();
-        }
         public void SortItems()
         {
             Array.Sort(Items, ItemComparer.Default);
