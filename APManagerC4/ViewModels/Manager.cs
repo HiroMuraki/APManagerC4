@@ -91,11 +91,7 @@ namespace APManagerC4.ViewModels
                          };
             }
 
-            ReGroup(result.Select(t => new AccountItemLabel(Messenger)
-            {
-                Guid = t.Guid,
-                Title = t.Title
-            }));
+            ReGroup(result.Select(t => AccountItemLabel.Create(Messenger, t.Guid, t.Title)));
         }
         public void AddItem(Models.AccountItem item)
         {
@@ -112,11 +108,7 @@ namespace APManagerC4.ViewModels
                 };
                 _groups.Add(group);
             }
-            group.Items.Add(new AccountItemLabel(Messenger)
-            {
-                Guid = item.Guid,
-                Title = item.Title
-            });
+            group.Items.Add(AccountItemLabel.Create(Messenger, item.Guid, item.Title));
             group.IsExpanded = true;
 
             var newItem = group.Items.First(t => t.Guid == item.Guid);
@@ -178,7 +170,7 @@ namespace APManagerC4.ViewModels
                     }
                     targetGroup.Items.Add(targetLabel);
                     targetGroup.Items.Sort(LabelItemComparer.Default);
-       
+
                 }
 
                 targetGroup.IsExpanded = true;

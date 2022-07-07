@@ -270,7 +270,7 @@ namespace APManagerC4
                 {
                     _dataCenter.ReEncrypt(pasword);
                     _dataCenter.SaveChanges();
-                    string sPassword = new AESTextEncrypter(GetPasswordKey()).Encrypt(pasword);
+                    string sPassword = new AesTextEncrypter(GetPasswordKey()).Encrypt(pasword);
                     MessageBox.Show($"已保存，请牢记密码凭证：\n{sPassword}", "保存成功", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch

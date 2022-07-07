@@ -7,7 +7,7 @@ namespace APManagerC4
     /// <summary>
     /// 用于对文本进行AES加密
     /// </summary>
-    class AESTextEncrypter
+    class AesTextEncrypter
     {
         public static readonly int KeyLength = 256 / 8; // AES密钥长度
         public static readonly int IVLength = 128 / 8; // IV长度
@@ -23,7 +23,7 @@ namespace APManagerC4
             return Encoding.UTF8.GetString(decryptedBytes);
         }
 
-        public AESTextEncrypter(byte[] key)
+        public AesTextEncrypter(byte[] key)
         {
             if (key.Length != KeyLength)
             {

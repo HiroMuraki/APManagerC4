@@ -15,7 +15,7 @@ namespace APManagerC4
     {
         class ItemEncrypter
         {
-            public AESTextEncrypter? Encrypter { get; init; }
+            public AesTextEncrypter? Encrypter { get; init; }
 
             public EncryptedAccountItem? GetEncrypted(AccountItem? item)
             {
@@ -180,7 +180,7 @@ namespace APManagerC4
         {
             _itemEncrypter = new ItemEncrypter()
             {
-                Encrypter = new AESTextEncrypter(PreprocessKey(password))
+                Encrypter = new AesTextEncrypter(PreprocessKey(password))
             };
             _data = new();
 #if BYTES_SERIALIZATION || ALL_SERIALIZATION
@@ -233,7 +233,7 @@ namespace APManagerC4
 
             _itemEncrypter = new ItemEncrypter()
             {
-                Encrypter = new AESTextEncrypter(PreprocessKey(password))
+                Encrypter = new AesTextEncrypter(PreprocessKey(password))
             };
             _data = new Dictionary<Guid, EncryptedAccountItem>();
 

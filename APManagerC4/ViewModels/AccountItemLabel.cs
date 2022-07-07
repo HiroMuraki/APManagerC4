@@ -9,6 +9,11 @@ namespace APManagerC4.ViewModels
     {
         public static RoutedCommand RequestToViewCommand { get; } = new();
 
+        public int GroupID
+        {
+            get => _groupID;
+            set => SetProperty(ref _groupID, value);
+        }
         public Guid Guid
         {
             get => _guid;
@@ -22,7 +27,48 @@ namespace APManagerC4.ViewModels
         public bool IsSelected
         {
             get => _isSelected;
-            set => SetProperty(ref _isSelected, value);
+            set
+            {
+                if (value)
+                {
+                    var itemGroup = _itemGroups[GroupID];
+                    var node = itemGroup.First;
+
+                    while (node is not null)
+                    {
+                        var next = node.Next;
+
+                        if (node.Value.TryGetTarget(out var label))
+                        {
+                            if (label.IsSelected)
+                            {
+                                label.IsSelected = false;
+                            }
+                        }
+                        else
+                        {
+                            itemGroup.Remove(node);
+                        }
+
+                        node = next;
+                    }
+
+                }
+
+                /* 由于设置该值的时候可能引起itemGroups项的变化，
+                 * 因此进行定期清理 */
+                var keys = _itemGroups.Keys.ToList();
+                for (int i = 0; i < keys.Count; i++)
+                {
+                    if (_itemGroups[keys[i]].Count == 0)
+                    {
+                        _itemGroups.Remove(keys[i]);
+                        --i;
+                    }
+                }
+
+                SetProperty(ref _isSelected, value);
+            }
         }
 
         public void RequestToView()
@@ -34,7 +80,16 @@ namespace APManagerC4.ViewModels
             Messenger.Send(message);
         }
 
-        public AccountItemLabel(IMessenger messenger) : base(messenger)
+        public static AccountItemLabel Create(IMessenger messenger, Guid guid, string title)
+        {
+            return new AccountItemLabel(messenger)
+            {
+                Guid = guid,
+                Title = title
+            };
+        }
+
+        protected AccountItemLabel(IMessenger messenger) : base(messenger)
         {
             Messenger.Register<AccountItemUpdatedMessage>(this, (sender, e) =>
             {
@@ -43,10 +98,23 @@ namespace APManagerC4.ViewModels
                     Title = e.Data.Title;
                 }
             });
+
+            var selfWeakRef = new WeakReference<AccountItemLabel>(this);
+            if (_itemGroups.TryGetValue(GroupID, out var itemGroup))
+            {
+                itemGroup.AddLast(selfWeakRef);
+            }
+            else
+            {
+                _itemGroups[GroupID] = new LinkedList<WeakReference<AccountItemLabel>>();
+                _itemGroups[GroupID].AddLast(selfWeakRef);
+            }
         }
 
+        private static readonly Dictionary<int, LinkedList<WeakReference<AccountItemLabel>>> _itemGroups = new();
         private readonly Guid _guid;
         private string _title = string.Empty;
         private bool _isSelected;
+        private int _groupID;
     }
 }
