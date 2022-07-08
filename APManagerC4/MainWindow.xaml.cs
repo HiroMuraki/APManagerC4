@@ -89,7 +89,7 @@ namespace APManagerC4
                 var r = MessageBox.Show($"对[{Viewer.Title}]的修改尚未提交，是否继续？", "警告", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
                 if (r != MessageBoxResult.OK)
                 {
-                    var current = Manager.Groups.SelectMany(g => g.Items).FirstOrDefault(t => t.Guid == Viewer.Guid);
+                    var current = Manager.Groups.SelectMany(g => g.Items).FirstOrDefault(t => t.Uid == Viewer.Uid);
                     if (current is not null)
                     {
                         current.IsSelected = true;
@@ -113,7 +113,7 @@ namespace APManagerC4
             {
                 var model = new Models.AccountItem()
                 {
-                    Guid = Viewer.Guid,
+                    Uid = Viewer.Uid,
                     Title = Viewer.Title,
                     Website = Viewer.Website,
                     Category = Viewer.Category,
@@ -135,7 +135,7 @@ namespace APManagerC4
         }
         private void DeleteItemCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            Manager.DeleteItem(Viewer.Guid);
+            Manager.DeleteItem(Viewer.Uid);
             Viewer.Unload();
         }
         private void DeleteItemCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -360,7 +360,7 @@ namespace APManagerC4
             long time = DateTime.Now.Ticks;
             var model = new Models.AccountItem()
             {
-                Guid = HM.Common.UidGenerator.Default.Next(),
+                Uid = HM.Common.UidGenerator.Default.Next(),
                 Title = ViewModels.Manager.DefaultItemTitle,
                 Category = ViewModels.Manager.DefaultItemCategory,
                 CreationTime = time,

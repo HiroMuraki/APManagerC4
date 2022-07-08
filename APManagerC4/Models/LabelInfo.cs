@@ -4,7 +4,7 @@ namespace APManagerC4.Models
 {
     public record class LabelInfo
     {
-        public Guid Guid
+        public Guid Uid
         {
             get => _guid;
             init

@@ -8,7 +8,7 @@ namespace APManagerC4.Messages
     /// </summary>
     class RequestToViewDetailMessage : RequestMessage<bool>
     {
-        public Guid Guid { get; init; }
+        public Guid Uid { get; init; }
         public bool ReadOnlyMode { get; init; }
     }
 }

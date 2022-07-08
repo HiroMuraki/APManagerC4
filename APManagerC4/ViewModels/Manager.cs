@@ -87,7 +87,7 @@ namespace APManagerC4.ViewModels
                 result = from item in DataCenter.Retrieve(_filter)
                          select new Models.LabelInfo()
                          {
-                             Guid = item.Guid,
+                             Uid = item.Uid,
                              Title = item.Title,
                              Category = item.Category
                          };
@@ -95,14 +95,14 @@ namespace APManagerC4.ViewModels
 
             ReGroup(result.Select(t => new AccountItemLabel(Messenger)
             {
-                Guid = t.Guid,
+                Uid = t.Uid,
                 Title = t.Title
             }));
         }
         public void AddItem(Models.AccountItem item)
         {
             /* 获取目标分组的引用（若没有找到则新建），然后让其重新获取数据 */
-            DataCenter.Add(item.Guid, item);
+            DataCenter.Add(item.Uid, item);
 
             var groupTitle = GetTargetGroupTitle(item);
             var group = _groups.FirstOrDefault(g => g?.Title == groupTitle, null);
@@ -116,12 +116,12 @@ namespace APManagerC4.ViewModels
             }
             group.Items.Add(new AccountItemLabel(Messenger)
             {
-                Guid = item.Guid,
+                Uid = item.Uid,
                 Title = item.Title
             });
             group.IsExpanded = true;
 
-            var newItem = group.Items.First(t => t.Guid == item.Guid);
+            var newItem = group.Items.First(t => t.Uid == item.Uid);
             newItem.IsSelected = true;
             newItem.RequestToView();
         }
@@ -129,8 +129,8 @@ namespace APManagerC4.ViewModels
         {
             DataCenter.Delete(guid);
 
-            var group = _groups.First(g => g.Items.Any(t => t?.Guid == guid));
-            group.Items.Remove(group.Items.First(t => t.Guid == guid));
+            var group = _groups.First(g => g.Items.Any(t => t?.Uid == guid));
+            group.Items.Remove(group.Items.First(t => t.Uid == guid));
 
             if (!group.Items.Any())
             {
@@ -169,10 +169,10 @@ namespace APManagerC4.ViewModels
                     _groups.Add(targetGroup);
                 }
 
-                var preGroup = _groups.First(g => g.Items.Any(t => t.Guid == e.Guid));
+                var preGroup = _groups.First(g => g.Items.Any(t => t.Uid == e.Uid));
                 if (!ReferenceEquals(preGroup, targetGroup))
                 {
-                    var targetLabel = preGroup.Items.First(t => t.Guid == e.Guid);
+                    var targetLabel = preGroup.Items.First(t => t.Uid == e.Uid);
                     preGroup.Items.Remove(targetLabel);
                     if (!preGroup.Items.Any())
                     {
@@ -195,7 +195,7 @@ namespace APManagerC4.ViewModels
             _groups.Clear();
             _groups.AddRange(
                 from aItem in labels
-                let item = DataCenter.Retrieve(aItem.Guid)
+                let item = DataCenter.Retrieve(aItem.Uid)
                 group aItem by GetTargetGroupTitle(item) into groups
                 select new AccountItemLabelGroup(Messenger)
                 {

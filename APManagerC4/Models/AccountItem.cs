@@ -7,12 +7,12 @@ namespace APManagerC4.Models
     /// </summary>
     public record class AccountItem : IEquatable<AccountItem>
     {
-        public Guid Guid
+        public Guid Uid
         {
-            get => _guid;
+            get => _uid;
             init
             {
-                _guid = value;
+                _uid = value;
             }
         }
         public string Category
@@ -104,7 +104,7 @@ namespace APManagerC4.Models
             }
         }
 
-        private readonly Guid _guid;
+        private readonly Guid _uid;
         private readonly string _category = string.Empty;
         private readonly string _website = string.Empty;
         private readonly string _title = string.Empty;

@@ -27,7 +27,7 @@ namespace APManagerC4
 
                 return new EncryptedAccountItem()
                 {
-                    Guid = item.Guid,
+                    Uid = item.Uid,
                     Title = EncryptString(item.Title),
                     Website = EncryptString(item.Website),
                     Category = EncryptString(item.Category),
@@ -47,7 +47,7 @@ namespace APManagerC4
 
                 return new AccountItem()
                 {
-                    Guid = item.Guid,
+                    Uid = item.Uid,
                     Title = DecryptString(item.Title),
                     Category = DecryptString(item.Category),
                     Email = DecryptString(item.Email),
@@ -67,7 +67,7 @@ namespace APManagerC4
 
                 return new LabelInfo()
                 {
-                    Guid = item.Guid,
+                    Uid = item.Uid,
                     Title = DecryptString(item.Title),
                     Category = DecryptString(item.Category)
                 };
@@ -107,7 +107,7 @@ namespace APManagerC4
             [BytesIncluded(10)] string _updateTime = string.Empty;
 
             [JsonIgnore]
-            public Guid Guid { get; init; } = UidGenerator.Default.Next();
+            public Guid Uid { get; init; } = UidGenerator.Default.Next();
             [Order(0), PropertyName("title")]
             public string Title { get => _title; init => _title = value; }
             [Order(1), PropertyName("website")]
@@ -136,7 +136,7 @@ namespace APManagerC4
 
         public void Add(Guid guid, AccountItem item)
         {
-            _data[item.Guid] = _itemEncrypter.GetEncrypted(item)!;
+            _data[item.Uid] = _itemEncrypter.GetEncrypted(item)!;
             HasUnsavedChanges = true;
         }
         public void Delete(Guid guid)
@@ -196,7 +196,7 @@ namespace APManagerC4
                         var buffer = new byte[fs.Length];
                         fs.Read(buffer, 0, buffer.Length);
                         var data = _bytesSerializer.DeserializeFromBytes<EncryptedAccountItem[]>(buffer);
-                        _data = data.ToDictionary(d => d.Guid);
+                        _data = data.ToDictionary(d => d.Uid);
                     }
                 }
 #elif JSON_SERIALIZATION || ALL_SERIALIZATION
@@ -268,7 +268,7 @@ namespace APManagerC4
             foreach (var item in preData.Values)
             {
                 var data = preEncrypter.DecryptToAccountItem(item);
-                _data[item.Guid] = _itemEncrypter.GetEncrypted(data)!;
+                _data[item.Uid] = _itemEncrypter.GetEncrypted(data)!;
             }
 
             HasUnsavedChanges = true;

@@ -12,10 +12,10 @@ namespace APManagerC4.ViewModels
         public static RoutedCommand ApplyModificationCommand { get; } = new();
         public static RoutedCommand DeleteItemCommand { get; } = new();
 
-        public Guid Guid
+        public Guid Uid
         {
-            get => _guid;
-            set => SetProperty(ref _guid, value);
+            get => _uid;
+            set => SetProperty(ref _uid, value);
         }
         public string Category
         {
@@ -104,7 +104,7 @@ namespace APManagerC4.ViewModels
             UpdateTime = DateTime.Now;
             _originData = new Models.AccountItem()
             {
-                Guid = Guid,
+                Uid = Uid,
                 Website = Website,
                 Category = Category,
                 Title = Title,
@@ -118,12 +118,12 @@ namespace APManagerC4.ViewModels
                 UpdateTime = UpdateTime.Ticks
             };
 
-            _dataCenter.Update(_guid, _originData);
+            _dataCenter.Update(_uid, _originData);
             HasUnsavedChanges = false;
 
             Messenger.Send(new AccountItemUpdatedMessage()
             {
-                Guid = _guid,
+                Uid = _uid,
                 Data = _originData
             });
         }
@@ -135,7 +135,7 @@ namespace APManagerC4.ViewModels
             Messenger.Register<RequestToViewDetailMessage>(this, (sender, e) =>
             {
                 Unload();
-                var item = _dataCenter.Retrieve(e.Guid);
+                var item = _dataCenter.Retrieve(e.Uid);
                 if (item is null)
                 {
                     return;
@@ -159,7 +159,7 @@ namespace APManagerC4.ViewModels
         private bool _readOnlyMode;
         private bool _hasUnsavedChanges;
         private Models.AccountItem _originData = _default;
-        private Guid _guid;
+        private Guid _uid;
         private string _website = string.Empty;
         private string _category = string.Empty;
         private string _title = string.Empty;
@@ -174,7 +174,7 @@ namespace APManagerC4.ViewModels
         private void LoadAccountItemModel(Models.AccountItem data)
         {
             _originData = data;
-            Guid = data.Guid;
+            Uid = data.Uid;
             Category = data.Category;
             Website = data.Website;
             Title = data.Title;

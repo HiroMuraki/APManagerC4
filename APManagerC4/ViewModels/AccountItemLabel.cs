@@ -15,7 +15,7 @@ namespace APManagerC4.ViewModels
             get => _groupID;
             set => SetProperty(ref _groupID, value);
         }
-        public Guid Guid
+        public Guid Uid
         {
             get => _guid;
             init => _guid = value;
@@ -76,7 +76,7 @@ namespace APManagerC4.ViewModels
         {
             var message = new RequestToViewDetailMessage()
             {
-                Guid = Guid,
+                Uid = Uid,
             };
             Messenger.Send(message);
         }
@@ -85,7 +85,7 @@ namespace APManagerC4.ViewModels
         {
             Messenger.Register<AccountItemUpdatedMessage>(this, (sender, e) =>
             {
-                if (Guid == e.Guid)
+                if (Uid == e.Uid)
                 {
                     Title = e.Data.Title;
                 }
