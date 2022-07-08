@@ -80,16 +80,7 @@ namespace APManagerC4.ViewModels
             Messenger.Send(message);
         }
 
-        public static AccountItemLabel Create(IMessenger messenger, Guid guid, string title)
-        {
-            return new AccountItemLabel(messenger)
-            {
-                Guid = guid,
-                Title = title
-            };
-        }
-
-        protected AccountItemLabel(IMessenger messenger) : base(messenger)
+        public AccountItemLabel(IMessenger messenger) : base(messenger)
         {
             Messenger.Register<AccountItemUpdatedMessage>(this, (sender, e) =>
             {
