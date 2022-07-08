@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using System.Windows.Input;
-using Guid = HM.Common.Uid;
+using Uid = HM.Common.Uid;
 
 namespace APManagerC4.ViewModels
 {
@@ -15,7 +15,7 @@ namespace APManagerC4.ViewModels
             get => _groupID;
             set => SetProperty(ref _groupID, value);
         }
-        public Guid Uid
+        public Uid Uid
         {
             get => _guid;
             init => _guid = value;
@@ -104,7 +104,7 @@ namespace APManagerC4.ViewModels
         }
 
         private static readonly Dictionary<int, LinkedList<WeakReference<AccountItemLabel>>> _itemGroups = new();
-        private readonly Guid _guid;
+        private readonly Uid _guid;
         private string _title = string.Empty;
         private bool _isSelected;
         private int _groupID;

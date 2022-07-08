@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using System.Windows.Input;
 using DataCenter = APManagerC4.IDataCenter<APManagerC4.Models.AccountItem>;
-using Guid = HM.Common.Uid;
+using Uid = HM.Common.Uid;
 
 namespace APManagerC4.ViewModels
 {
@@ -12,7 +12,7 @@ namespace APManagerC4.ViewModels
         public static RoutedCommand ApplyModificationCommand { get; } = new();
         public static RoutedCommand DeleteItemCommand { get; } = new();
 
-        public Guid Uid
+        public Uid Uid
         {
             get => _uid;
             set => SetProperty(ref _uid, value);
@@ -159,7 +159,7 @@ namespace APManagerC4.ViewModels
         private bool _readOnlyMode;
         private bool _hasUnsavedChanges;
         private Models.AccountItem _originData = _default;
-        private Guid _uid;
+        private Uid _uid;
         private string _website = string.Empty;
         private string _category = string.Empty;
         private string _title = string.Empty;

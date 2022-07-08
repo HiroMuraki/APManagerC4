@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Messaging.Messages;
-using Guid = HM.Common.Uid;
+using Uid = HM.Common.Uid;
 
 namespace APManagerC4.Messages
 {
@@ -8,7 +8,7 @@ namespace APManagerC4.Messages
     /// </summary>
     class RequestToViewDetailMessage : RequestMessage<bool>
     {
-        public Guid Uid { get; init; }
+        public Uid Uid { get; init; }
         public bool ReadOnlyMode { get; init; }
     }
 }

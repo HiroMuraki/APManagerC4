@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using HM.Cryptography;
 using HM.Common.Asynchronous;
-using Guid = HM.Common.Uid;
+using Uid = HM.Common.Uid;
 
 namespace APManagerC4
 {

@@ -8,7 +8,7 @@ using PropertyName = System.Text.Json.Serialization.JsonPropertyNameAttribute;
 using HM.Serialization;
 using HM.Cryptography;
 using HM.Common;
-using Guid = HM.Common.Uid;
+using Uid = HM.Common.Uid;
 
 namespace APManagerC4
 {
@@ -107,7 +107,7 @@ namespace APManagerC4
             [BytesIncluded(10)] string _updateTime = string.Empty;
 
             [JsonIgnore]
-            public Guid Uid { get; init; } = UidGenerator.Default.Next();
+            public Uid Uid { get; init; } = UidGenerator.Default.Next();
             [Order(0), PropertyName("title")]
             public string Title { get => _title; init => _title = value; }
             [Order(1), PropertyName("website")]
@@ -134,19 +134,19 @@ namespace APManagerC4
 
         public bool HasUnsavedChanges { get; private set; }
 
-        public void Add(Guid guid, AccountItem item)
+        public void Add(Uid guid, AccountItem item)
         {
             _data[item.Uid] = _itemEncrypter.GetEncrypted(item)!;
             HasUnsavedChanges = true;
         }
-        public void Delete(Guid guid)
+        public void Delete(Uid guid)
         {
             if (_data.Remove(guid))
             {
                 HasUnsavedChanges = true;
             }
         }
-        public AccountItem Retrieve(Guid guid)
+        public AccountItem Retrieve(Uid guid)
         {
             return _itemEncrypter.DecryptToAccountItem(_data[guid])!;
         }
@@ -174,7 +174,7 @@ namespace APManagerC4
                 yield return item;
             }
         }
-        public void Update(Guid guid, AccountItem newData)
+        public void Update(Uid guid, AccountItem newData)
         {
             _data[guid] = _itemEncrypter.GetEncrypted(newData)!;
             HasUnsavedChanges = true;
@@ -209,7 +209,7 @@ namespace APManagerC4
                     {
                         throw new JsonException();
                     }
-                    _data = data.ToDictionary(d => d.Guid);
+                    _data = data.ToDictionary(d => d.Uid);
                 }
             }
 #endif
@@ -217,7 +217,7 @@ namespace APManagerC4
             }
             catch
             {
-                _data = new Dictionary<Guid, EncryptedAccountItem>();
+                _data = new Dictionary<Uid, EncryptedAccountItem>();
                 throw;
             }
         }
@@ -227,7 +227,7 @@ namespace APManagerC4
         /// <exception cref="IOException"></exception>
         public void SaveChanges()
         {
-            string backupFileName = $"{_dataFileName}_{System.Guid.NewGuid()}.backup";
+            string backupFileName = $"{_dataFileName}_{Guid.NewGuid()}.backup";
             try
             {
                 if (File.Exists(_dataFileName))
@@ -263,7 +263,7 @@ namespace APManagerC4
             {
                 Encrypter = new AesTextEncrypter(PreprocessKey(password))
             };
-            _data = new Dictionary<Guid, EncryptedAccountItem>();
+            _data = new Dictionary<Uid, EncryptedAccountItem>();
 
             foreach (var item in preData.Values)
             {
@@ -277,7 +277,7 @@ namespace APManagerC4
         private static readonly string _dataFileName = "data.dat";
         private readonly BytesSerializer _bytesSerializer = new() { TextEncoding = Encoding.ASCII };
         private ItemEncrypter _itemEncrypter = new();
-        private Dictionary<Guid, EncryptedAccountItem> _data = new();
+        private Dictionary<Uid, EncryptedAccountItem> _data = new();
         private static byte[] PreprocessKey(string password)
         {
             using (var hashFunc = SHA256.Create())
@@ -314,7 +314,7 @@ namespace APManagerC4
         //            LoginPassword = RandomString(),
         //            Remarks = RandomString(),
         //            UserName = RandomString(),
-        //            Guid = Guid.NewGuid(),
+        //            Uid = Uid.NewUid(),
         //            CreationTime = DateTime.Now.Ticks,
         //            UpdateTime = DateTime.Now.Ticks
         //        });

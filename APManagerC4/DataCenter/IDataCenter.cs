@@ -1,4 +1,4 @@
-﻿using Guid = HM.Common.Uid;
+﻿using Uid = HM.Common.Uid;
 
 namespace APManagerC4
 {
@@ -8,10 +8,10 @@ namespace APManagerC4
     /// <typeparam name="T"></typeparam>
     public interface IDataCenter<T>
     {
-        T Retrieve(Guid guid);
+        T Retrieve(Uid guid);
         IEnumerable<T> Retrieve(Predicate<T> predicate);
-        void Add(Guid guid, T accountItem);
-        void Update(Guid guid, T newData);
-        void Delete(Guid guid);
+        void Add(Uid guid, T accountItem);
+        void Update(Uid guid, T newData);
+        void Delete(Uid guid);
     }
 }

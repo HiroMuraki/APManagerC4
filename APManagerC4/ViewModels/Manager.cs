@@ -5,7 +5,7 @@ using System.Windows.Input;
 using AbstractDataProvider = APManagerC4.IDataProvider<APManagerC4.Models.LabelInfo>;
 using DataCenter = APManagerC4.IDataCenter<APManagerC4.Models.AccountItem>;
 using HM.Wpf;
-using Guid = HM.Common.Uid;
+using Uid = HM.Common.Uid;
 
 namespace APManagerC4.ViewModels
 {
@@ -125,7 +125,7 @@ namespace APManagerC4.ViewModels
             newItem.IsSelected = true;
             newItem.RequestToView();
         }
-        public void DeleteItem(Guid guid)
+        public void DeleteItem(Uid guid)
         {
             DataCenter.Delete(guid);
 

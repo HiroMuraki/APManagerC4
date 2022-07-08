@@ -1,4 +1,4 @@
-﻿using Guid = HM.Common.Uid;
+﻿using Uid = HM.Common.Uid;
 
 namespace APManagerC4.Models
 {
@@ -7,7 +7,7 @@ namespace APManagerC4.Models
     /// </summary>
     public record class AccountItem : IEquatable<AccountItem>
     {
-        public Guid Uid
+        public Uid Uid
         {
             get => _uid;
             init
@@ -104,7 +104,7 @@ namespace APManagerC4.Models
             }
         }
 
-        private readonly Guid _uid;
+        private readonly Uid _uid;
         private readonly string _category = string.Empty;
         private readonly string _website = string.Empty;
         private readonly string _title = string.Empty;
