@@ -6,7 +6,7 @@ namespace APManagerC4.Messages
     /// <summary>
     /// 请求查看AccountItem详情的消息
     /// </summary>
-    class RequestToViewDetailMessage : RequestMessage<bool>
+    internal class RequestToViewDetailMessage : RequestMessage<bool>
     {
         public Uid Uid { get; init; }
         public bool ReadOnlyMode { get; init; }

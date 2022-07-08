@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
-using HM.Wpf;
+using HM.Collections.Observable;
 
 namespace APManagerC4.ViewModels
 {

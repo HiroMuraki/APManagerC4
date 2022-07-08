@@ -1,13 +1,13 @@
 ﻿using APManagerC4.Models;
+using HM.Common;
+using HM.Cryptography;
+using HM.Serialization;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Serialization;
 using OrderAttribute = System.Text.Json.Serialization.JsonPropertyOrderAttribute;
 using PropertyName = System.Text.Json.Serialization.JsonPropertyNameAttribute;
-using HM.Serialization;
-using HM.Cryptography;
-using HM.Common;
 using Uid = HM.Common.Uid;
 
 namespace APManagerC4
@@ -15,9 +15,9 @@ namespace APManagerC4
     /// <summary>
     /// 默认数据中心
     /// </summary>
-    class TestDataCenter : IDataCenter<AccountItem>, IDataProvider<LabelInfo>
+    internal class TestDataCenter : IDataCenter<AccountItem>, IDataProvider<LabelInfo>
     {
-        class ItemEncrypter
+        private class ItemEncrypter
         {
             public AesTextEncrypter? Encrypter { get; init; }
 
@@ -92,19 +92,19 @@ namespace APManagerC4
         }
 
         [BytesSerializable]
-        class EncryptedAccountItem
+        private class EncryptedAccountItem
         {
-            [BytesIncluded(0)] string _title = string.Empty;
-            [BytesIncluded(1)] string _website = string.Empty;
-            [BytesIncluded(2)] string _category = string.Empty;
-            [BytesIncluded(3)] string _userName = string.Empty;
-            [BytesIncluded(4)] string _loginName = string.Empty;
-            [BytesIncluded(5)] string _loginPassword = string.Empty;
-            [BytesIncluded(6)] string _email = string.Empty;
-            [BytesIncluded(7)] string _phone = string.Empty;
-            [BytesIncluded(8)] string _remarks = string.Empty;
-            [BytesIncluded(9)] string _creationTime = string.Empty;
-            [BytesIncluded(10)] string _updateTime = string.Empty;
+            [BytesIncluded(0)] private string _title = string.Empty;
+            [BytesIncluded(1)] private string _website = string.Empty;
+            [BytesIncluded(2)] private string _category = string.Empty;
+            [BytesIncluded(3)] private string _userName = string.Empty;
+            [BytesIncluded(4)] private string _loginName = string.Empty;
+            [BytesIncluded(5)] private string _loginPassword = string.Empty;
+            [BytesIncluded(6)] private string _email = string.Empty;
+            [BytesIncluded(7)] private string _phone = string.Empty;
+            [BytesIncluded(8)] private string _remarks = string.Empty;
+            [BytesIncluded(9)] private string _creationTime = string.Empty;
+            [BytesIncluded(10)] private string _updateTime = string.Empty;
 
             [JsonIgnore]
             public Uid Uid { get; init; } = UidGenerator.Default.Next();

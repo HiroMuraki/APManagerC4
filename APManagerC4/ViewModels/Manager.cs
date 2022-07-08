@@ -1,10 +1,10 @@
 ﻿using APManagerC4.Messages;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using HM.Collections.Observable;
 using System.Windows.Input;
 using AbstractDataProvider = APManagerC4.IDataProvider<APManagerC4.Models.LabelInfo>;
 using DataCenter = APManagerC4.IDataCenter<APManagerC4.Models.AccountItem>;
-using HM.Wpf;
 using Uid = HM.Common.Uid;
 
 namespace APManagerC4.ViewModels
@@ -14,7 +14,7 @@ namespace APManagerC4.ViewModels
         public static readonly string DefaultItemCategory = "";
         public static readonly string DefaultItemTitle = "新建";
 
-        class GroupComparer : IComparer<AccountItemLabelGroup>
+        private class GroupComparer : IComparer<AccountItemLabelGroup>
         {
             public static GroupComparer Default { get; } = new();
 
@@ -43,7 +43,7 @@ namespace APManagerC4.ViewModels
             }
         }
 
-        class LabelItemComparer : IComparer<AccountItemLabel>
+        private class LabelItemComparer : IComparer<AccountItemLabel>
         {
             public static LabelItemComparer Default { get; } = new();
 
