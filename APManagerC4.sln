@@ -3,7 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APManagerC4", "APManagerC4\APManagerC4.csproj", "{4F4C1C01-5BFA-4DDE-925E-F12A8CBC1439}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APManagerC4", "APManagerC4\APManagerC4.csproj", "{4F4C1C01-5BFA-4DDE-925E-F12A8CBC1439}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serialization", "..\HMLib\Serialization\Serialization.csproj", "{1265B988-17E1-4083-88EE-5B571DBCEBB8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptography", "..\HMLib\Cryptography\Cryptography.csproj", "{D0AADB21-26C2-4ED5-AF2E-7966D816E0DB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wpf", "..\HMLib\Wpf\Wpf.csproj", "{61F56420-903F-4F74-9B88-0BC7AD609354}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "..\HMLib\Common\Common.csproj", "{969DE070-29F5-43F0-AB44-9D1A4A831D04}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +23,22 @@ Global
 		{4F4C1C01-5BFA-4DDE-925E-F12A8CBC1439}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F4C1C01-5BFA-4DDE-925E-F12A8CBC1439}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F4C1C01-5BFA-4DDE-925E-F12A8CBC1439}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1265B988-17E1-4083-88EE-5B571DBCEBB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1265B988-17E1-4083-88EE-5B571DBCEBB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1265B988-17E1-4083-88EE-5B571DBCEBB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1265B988-17E1-4083-88EE-5B571DBCEBB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0AADB21-26C2-4ED5-AF2E-7966D816E0DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0AADB21-26C2-4ED5-AF2E-7966D816E0DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0AADB21-26C2-4ED5-AF2E-7966D816E0DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0AADB21-26C2-4ED5-AF2E-7966D816E0DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61F56420-903F-4F74-9B88-0BC7AD609354}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61F56420-903F-4F74-9B88-0BC7AD609354}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61F56420-903F-4F74-9B88-0BC7AD609354}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61F56420-903F-4F74-9B88-0BC7AD609354}.Release|Any CPU.Build.0 = Release|Any CPU
+		{969DE070-29F5-43F0-AB44-9D1A4A831D04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{969DE070-29F5-43F0-AB44-9D1A4A831D04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{969DE070-29F5-43F0-AB44-9D1A4A831D04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{969DE070-29F5-43F0-AB44-9D1A4A831D04}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

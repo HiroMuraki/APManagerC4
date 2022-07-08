@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using HM.Wpf;
 
 namespace APManagerC4.ViewModels
 {
@@ -7,7 +8,7 @@ namespace APManagerC4.ViewModels
     {
         public string Title
         {
-            get => _title;
+            get => _title.Replace("_", "__");
             set => SetProperty(ref _title, value);
         }
         public ObservableList<AccountItemLabel> Items { get; init; } = new();

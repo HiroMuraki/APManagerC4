@@ -4,6 +4,8 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using HM.Cryptography;
+using HM.Common.Asynchronous;
 
 namespace APManagerC4
 {

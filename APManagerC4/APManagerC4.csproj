@@ -20,4 +20,11 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="7.1.2" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\..\HMLib\Common\Common.csproj" />
+	  <ProjectReference Include="..\..\HMLib\Cryptography\Cryptography.csproj" />
+	  <ProjectReference Include="..\..\HMLib\Serialization\Serialization.csproj" />
+	  <ProjectReference Include="..\..\HMLib\Wpf\Wpf.csproj" />
+	</ItemGroup>
+
 </Project>

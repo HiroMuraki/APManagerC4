@@ -5,6 +5,8 @@ using System.Text;
 using System.Text.Json.Serialization;
 using OrderAttribute = System.Text.Json.Serialization.JsonPropertyOrderAttribute;
 using PropertyName = System.Text.Json.Serialization.JsonPropertyNameAttribute;
+using HM.Serialization;
+using HM.Cryptography;
 
 namespace APManagerC4
 {
@@ -182,18 +184,19 @@ namespace APManagerC4
             {
                 Encrypter = new AesTextEncrypter(PreprocessKey(password))
             };
-            _data = new();
-#if BYTES_SERIALIZATION || ALL_SERIALIZATION
-            if (File.Exists("data.dat"))
+            try
             {
-                using (var fs = new FileStream("data.dat", FileMode.Open, FileAccess.Read))
+#if BYTES_SERIALIZATION || ALL_SERIALIZATION
+                if (File.Exists(_dataFileName))
                 {
-                    var buffer = new byte[fs.Length];
-                    fs.Read(buffer, 0, buffer.Length);
-                    var data = _bytesSerializer.DeserializeFromBytes<EncryptedAccountItem[]>(buffer);
-                    _data = data.ToDictionary(d => d.Guid);
+                    using (var fs = new FileStream(_dataFileName, FileMode.Open, FileAccess.Read))
+                    {
+                        var buffer = new byte[fs.Length];
+                        fs.Read(buffer, 0, buffer.Length);
+                        var data = _bytesSerializer.DeserializeFromBytes<EncryptedAccountItem[]>(buffer);
+                        _data = data.ToDictionary(d => d.Guid);
+                    }
                 }
-            }
 #elif JSON_SERIALIZATION || ALL_SERIALIZATION
             if (File.Exists("data.json"))
             {
@@ -208,23 +211,46 @@ namespace APManagerC4
                 }
             }
 #endif
-            HasUnsavedChanges = false;
+                HasUnsavedChanges = false;
+            }
+            catch
+            {
+                _data = new Dictionary<Guid, EncryptedAccountItem>();
+                throw;
+            }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <exception cref="IOException"></exception>
         public void SaveChanges()
         {
-#if BYTES_SERIALIZATION || ALL_SERIALIZATION
-            using (var fs = new FileStream("data.dat", FileMode.Create, FileAccess.Write))
+            string backupFileName = $"{_dataFileName}_{Guid.NewGuid()}.backup";
+            try
             {
-                fs.Write(_bytesSerializer.SerializeToBytes(_data.Values.ToArray()));
-            }
+                if (File.Exists(_dataFileName))
+                {
+                    File.Copy(_dataFileName, backupFileName);
+                }
+#if BYTES_SERIALIZATION || ALL_SERIALIZATION
+                using (var fs = new FileStream(_dataFileName, FileMode.Create, FileAccess.Write))
+                {
+                    fs.Write(_bytesSerializer.SerializeToBytes(_data.Values.ToArray()));
+                }
 #elif JSON_SERIALIZATION || ALL_SERIALIZATION
-            using (var writer = new StreamWriter("data.json"))
+            using (var writer = new StreamWriter(fileName))
             {
                 string jsonText = JsonSerializer.Serialize(_data.ToArray());
                 writer.Write(jsonText);
             }
 #endif
-            HasUnsavedChanges = false;
+                HasUnsavedChanges = false;
+            }
+            catch
+            {
+                HasUnsavedChanges = true;
+                throw new IOException();
+            }
         }
         public void ReEncrypt(string password)
         {
@@ -246,7 +272,8 @@ namespace APManagerC4
             HasUnsavedChanges = true;
         }
 
-        private readonly BytesSerializer _bytesSerializer = new() { Encoding = Encoding.ASCII };
+        private static readonly string _dataFileName = "data.dat";
+        private readonly BytesSerializer _bytesSerializer = new() { TextEncoding = Encoding.ASCII };
         private ItemEncrypter _itemEncrypter = new();
         private Dictionary<Guid, EncryptedAccountItem> _data = new();
         private static byte[] PreprocessKey(string password)
