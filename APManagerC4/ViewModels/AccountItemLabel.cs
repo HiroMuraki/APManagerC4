@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using System.Windows.Input;
+using Guid = HM.Common.Uid;
 
 namespace APManagerC4.ViewModels
 {

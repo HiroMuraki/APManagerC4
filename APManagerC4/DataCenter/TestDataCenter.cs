@@ -7,6 +7,8 @@ using OrderAttribute = System.Text.Json.Serialization.JsonPropertyOrderAttribute
 using PropertyName = System.Text.Json.Serialization.JsonPropertyNameAttribute;
 using HM.Serialization;
 using HM.Cryptography;
+using HM.Common;
+using Guid = HM.Common.Uid;
 
 namespace APManagerC4
 {
@@ -105,7 +107,7 @@ namespace APManagerC4
             [BytesIncluded(10)] string _updateTime = string.Empty;
 
             [JsonIgnore]
-            public Guid Guid { get; init; } = Guid.NewGuid();
+            public Guid Guid { get; init; } = UidGenerator.Default.Next();
             [Order(0), PropertyName("title")]
             public string Title { get => _title; init => _title = value; }
             [Order(1), PropertyName("website")]
@@ -225,7 +227,7 @@ namespace APManagerC4
         /// <exception cref="IOException"></exception>
         public void SaveChanges()
         {
-            string backupFileName = $"{_dataFileName}_{Guid.NewGuid()}.backup";
+            string backupFileName = $"{_dataFileName}_{System.Guid.NewGuid()}.backup";
             try
             {
                 if (File.Exists(_dataFileName))

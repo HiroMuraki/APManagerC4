@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using HM.Cryptography;
 using HM.Common.Asynchronous;
+using Guid = HM.Common.Uid;
 
 namespace APManagerC4
 {
@@ -359,7 +360,7 @@ namespace APManagerC4
             long time = DateTime.Now.Ticks;
             var model = new Models.AccountItem()
             {
-                Guid = Guid.NewGuid(),
+                Guid = HM.Common.UidGenerator.Default.Next(),
                 Title = ViewModels.Manager.DefaultItemTitle,
                 Category = ViewModels.Manager.DefaultItemCategory,
                 CreationTime = time,

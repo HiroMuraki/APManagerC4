@@ -1,4 +1,6 @@
-﻿namespace APManagerC4
+﻿using Guid = HM.Common.Uid;
+
+namespace APManagerC4
 {
     /// <summary>
     /// 增删改查协定

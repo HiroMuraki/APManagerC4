@@ -1,5 +1,6 @@
 ﻿using APManagerC4.Models;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using Guid = HM.Common.Uid;
 
 namespace APManagerC4.Messages
 {

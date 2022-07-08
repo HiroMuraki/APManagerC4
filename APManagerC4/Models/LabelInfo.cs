@@ -1,4 +1,6 @@
-﻿namespace APManagerC4.Models
+﻿using Guid = HM.Common.Uid;
+
+namespace APManagerC4.Models
 {
     public record class LabelInfo
     {
