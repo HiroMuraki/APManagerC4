@@ -17,80 +17,6 @@ namespace APManagerC4
     /// </summary>
     internal class TestDataCenter : IDataCenter<AccountItem>, IDataProvider<LabelInfo>
     {
-        private class ItemEncrypter
-        {
-            public AesTextEncrypter? Encrypter { get; init; }
-
-            public EncryptedAccountItem? GetEncrypted(AccountItem? item)
-            {
-                if (item is null) return null;
-
-                return new EncryptedAccountItem()
-                {
-                    Uid = item.Uid,
-                    Title = EncryptString(item.Title),
-                    Website = EncryptString(item.Website),
-                    Category = EncryptString(item.Category),
-                    UserName = EncryptString(item.UserName),
-                    LoginName = EncryptString(item.LoginName),
-                    LoginPassword = EncryptString(item.LoginPassword),
-                    Remarks = EncryptString(item.Remarks),
-                    Email = EncryptString(item.Email),
-                    Phone = EncryptString(item.Phone),
-                    CreationTime = EncryptString(item.CreationTime.ToString()),
-                    UpdateTime = EncryptString(item.UpdateTime.ToString())
-                };
-            }
-            public AccountItem? DecryptToAccountItem(EncryptedAccountItem? item)
-            {
-                if (item is null) return null;
-
-                return new AccountItem()
-                {
-                    Uid = item.Uid,
-                    Title = DecryptString(item.Title),
-                    Category = DecryptString(item.Category),
-                    Email = DecryptString(item.Email),
-                    LoginName = DecryptString(item.LoginName),
-                    LoginPassword = DecryptString(item.LoginPassword),
-                    UserName = DecryptString(item.UserName),
-                    Phone = DecryptString(item.Phone),
-                    Remarks = DecryptString(item.Remarks),
-                    Website = DecryptString(item.Website),
-                    CreationTime = long.TryParse(DecryptString(item.CreationTime), out var creationTime) ? creationTime : 0,
-                    UpdateTime = long.TryParse(DecryptString(item.UpdateTime), out var updateTime) ? updateTime : 0
-                };
-            }
-            public LabelInfo? DecryptToLabelInfo(EncryptedAccountItem? item)
-            {
-                if (item is null) return null;
-
-                return new LabelInfo()
-                {
-                    Uid = item.Uid,
-                    Title = DecryptString(item.Title),
-                    Category = DecryptString(item.Category)
-                };
-            }
-
-            private string EncryptString(string text)
-            {
-                if (string.IsNullOrEmpty(text))
-                {
-                    return string.Empty;
-                }
-                return Encrypter?.Encrypt(text) ?? text;
-            }
-            private string DecryptString(string text)
-            {
-                if (string.IsNullOrEmpty(text))
-                {
-                    return string.Empty;
-                }
-                return Encrypter?.Decrypt(text) ?? text;
-            }
-        }
-
         [BytesSerializable]
         private class EncryptedAccountItem
         {
@@ -130,13 +56,77 @@ namespace APManagerC4
             public string CreationTime { get => _creationTime; init => _creationTime = value; }
             [Order(10), PropertyName("updateTime")]
             public string UpdateTime { get => _updateTime; init => _updateTime = value; }
+
+
+            public static EncryptedAccountItem FromAccountItem(AccountItem item, ITextEncrypter? textEncrypter)
+            {
+                return new EncryptedAccountItem()
+                {
+                    Uid = item.Uid,
+                    Title = EncryptString(item.Title, textEncrypter),
+                    Website = EncryptString(item.Website, textEncrypter),
+                    Category = EncryptString(item.Category, textEncrypter),
+                    UserName = EncryptString(item.UserName, textEncrypter),
+                    LoginName = EncryptString(item.LoginName, textEncrypter),
+                    LoginPassword = EncryptString(item.LoginPassword, textEncrypter),
+                    Remarks = EncryptString(item.Remarks, textEncrypter),
+                    Email = EncryptString(item.Email, textEncrypter),
+                    Phone = EncryptString(item.Phone, textEncrypter),
+                    CreationTime = EncryptString(item.CreationTime.ToString(), textEncrypter),
+                    UpdateTime = EncryptString(item.UpdateTime.ToString(), textEncrypter)
+                };
+            }
+            public AccountItem ToAccountItem(ITextEncrypter? textEncrypter)
+            {
+                return new AccountItem()
+                {
+                    Uid = Uid,
+                    Title = DecryptString(Title, textEncrypter),
+                    Category = DecryptString(Category, textEncrypter),
+                    Email = DecryptString(Email, textEncrypter),
+                    LoginName = DecryptString(LoginName, textEncrypter),
+                    LoginPassword = DecryptString(LoginPassword, textEncrypter),
+                    UserName = DecryptString(UserName, textEncrypter),
+                    Phone = DecryptString(Phone, textEncrypter),
+                    Remarks = DecryptString(Remarks, textEncrypter),
+                    Website = DecryptString(Website, textEncrypter),
+                    CreationTime = long.TryParse(DecryptString(CreationTime, textEncrypter), out var creationTime) ? creationTime : 0,
+                    UpdateTime = long.TryParse(DecryptString(UpdateTime, textEncrypter), out var updateTime) ? updateTime : 0
+                };
+            }
+            public LabelInfo ToLabelInfo(ITextEncrypter? textEncrypter)
+            {
+                return new LabelInfo()
+                {
+                    Uid = Uid,
+                    Title = DecryptString(Title, textEncrypter),
+                    Category = DecryptString(Category, textEncrypter)
+                };
+            }
+
+            private static string EncryptString(string text, ITextEncrypter? textEncrypter)
+            {
+                if (string.IsNullOrEmpty(text))
+                {
+                    return string.Empty;
+                }
+                return textEncrypter?.Encrypt(text) ?? text;
+            }
+            private static string DecryptString(string text, ITextEncrypter? textEncrypter)
+            {
+                if (string.IsNullOrEmpty(text))
+                {
+                    return string.Empty;
+                }
+                return textEncrypter?.Decrypt(text) ?? text;
+            }
         }
 
         public bool HasUnsavedChanges { get; private set; }
 
         public void Add(Uid guid, AccountItem item)
         {
-            _data[item.Uid] = _itemEncrypter.GetEncrypted(item)!;
+            _data[item.Uid] = EncryptedAccountItem.FromAccountItem(item, _textEncrypter)!;
             HasUnsavedChanges = true;
         }
         public void Delete(Uid guid)
@@ -148,12 +138,12 @@ namespace APManagerC4
         }
         public AccountItem Retrieve(Uid guid)
         {
-            return _itemEncrypter.DecryptToAccountItem(_data[guid])!;
+            return _data[guid].ToAccountItem(_textEncrypter);
         }
         public IEnumerable<AccountItem> Retrieve(Predicate<AccountItem>? predicate)
         {
             var result = from item in _data.Values
-                         let data = _itemEncrypter.DecryptToAccountItem(item)
+                         let data = item.ToAccountItem(_textEncrypter)
                          where predicate?.Invoke(data) ?? true
                          select data;
 
@@ -165,7 +155,7 @@ namespace APManagerC4
         public IEnumerable<LabelInfo> Retrieve(Predicate<LabelInfo>? predicate)
         {
             var result = from item in _data.Values
-                         let data = _itemEncrypter.DecryptToLabelInfo(item)
+                         let data = item.ToLabelInfo(_textEncrypter)
                          where predicate?.Invoke(data) ?? true
                          select data;
 
@@ -176,16 +166,13 @@ namespace APManagerC4
         }
         public void Update(Uid guid, AccountItem newData)
         {
-            _data[guid] = _itemEncrypter.GetEncrypted(newData)!;
+            _data[guid] = EncryptedAccountItem.FromAccountItem(newData, _textEncrypter)!;
             HasUnsavedChanges = true;
         }
 
         public void Initialize(string password)
         {
-            _itemEncrypter = new ItemEncrypter()
-            {
-                Encrypter = new AesTextEncrypter(PreprocessKey(password))
-            };
+            _textEncrypter = new AesTextEncrypter(PreprocessKey(password));
             try
             {
 #if BYTES_SERIALIZATION || ALL_SERIALIZATION
@@ -256,19 +243,16 @@ namespace APManagerC4
         }
         public void ReEncrypt(string password)
         {
-            var preEncrypter = _itemEncrypter;
+            var preEncrypter = _textEncrypter;
             var preData = _data;
 
-            _itemEncrypter = new ItemEncrypter()
-            {
-                Encrypter = new AesTextEncrypter(PreprocessKey(password))
-            };
+            _textEncrypter = new AesTextEncrypter(PreprocessKey(password));
             _data = new Dictionary<Uid, EncryptedAccountItem>();
 
             foreach (var item in preData.Values)
             {
-                var data = preEncrypter.DecryptToAccountItem(item);
-                _data[item.Uid] = _itemEncrypter.GetEncrypted(data)!;
+                var data = item.ToAccountItem(preEncrypter);
+                _data[item.Uid] = EncryptedAccountItem.FromAccountItem(data, _textEncrypter)!;
             }
 
             HasUnsavedChanges = true;
@@ -276,7 +260,7 @@ namespace APManagerC4
 
         private static readonly string _dataFileName = "data.dat";
         private readonly BytesSerializer _bytesSerializer = new() { TextEncoding = Encoding.ASCII };
-        private ItemEncrypter _itemEncrypter = new();
+        private ITextEncrypter? _textEncrypter;
         private Dictionary<Uid, EncryptedAccountItem> _data = new();
         private static byte[] PreprocessKey(string password)
         {
