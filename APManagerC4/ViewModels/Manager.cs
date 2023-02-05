@@ -55,6 +55,7 @@ namespace APManagerC4.ViewModels
 
         public static RoutedCommand NewItemCommand { get; } = new();
         public static RoutedCommand SaveChangesCommand { get; } = new();
+        public static RoutedCommand ExportToJsonCommand { get; } = new();
 
         public string GroupKey
         {
@@ -84,7 +85,7 @@ namespace APManagerC4.ViewModels
             }
             else
             {
-                result = from item in DataCenter.Retrieve(_filter)
+                result = from item in DataCenter.RetrieveAll(_filter)
                          select new Models.LabelInfo()
                          {
                              Uid = item.Uid,
@@ -141,7 +142,7 @@ namespace APManagerC4.ViewModels
         {
             ArgumentNullException.ThrowIfNull(selector);
 
-            var result = from item in DataCenter.Retrieve(t => true)
+            var result = from item in DataCenter.RetrieveAll(t => true)
                          let value = selector(item)
                          where predicate?.Invoke(value) ?? true
                          orderby value

@@ -9,7 +9,7 @@ namespace APManagerC4
     public interface IDataCenter<T>
     {
         T Retrieve(Uid guid);
-        IEnumerable<T> Retrieve(Predicate<T> predicate);
+        IEnumerable<T> RetrieveAll(Predicate<T> predicate);
         void Add(Uid guid, T accountItem);
         void Update(Uid guid, T newData);
         void Delete(Uid guid);

@@ -17,13 +17,16 @@
             <Grid Grid.Row="0">
                 <Grid.CommandBindings>
                     <CommandBinding Command="{x:Static vm:Manager.SaveChangesCommand}" Executed="SaveChangesCommand_Executed" CanExecute="SaveChangesCommand_CanExecute"/>
+                    <CommandBinding Command="{x:Static vm:Manager.ExportToJsonCommand}" Executed="ExportToJsonCommand_Executed" CanExecute="ExportToJsonCommand_CanExecute"/>
                 </Grid.CommandBindings>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="60"/>
                     <ColumnDefinition/>
+                    <ColumnDefinition Width="60"/>
                 </Grid.ColumnDefinitions>
-                <Button Content="保存" Command="{x:Static vm:Manager.SaveChangesCommand}"/>
+                <Button Content="保存" Grid.Column="0" Command="{x:Static vm:Manager.SaveChangesCommand}"/>
                 <TextBox x:Name="searchBox" Grid.Column="1" Padding="5,0" TextChanged="SearchBox_TextChanged" VerticalContentAlignment="Center"/>
+                <Button Content="导出JSON" Grid.Column="2" Command="{x:Static vm:Manager.ExportToJsonCommand}"/>
             </Grid>
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -75,8 +78,8 @@
                         <RowDefinition/>
                         <RowDefinition Height="30"/>
                     </Grid.RowDefinitions>
-                    <DockPanel>
-                        <Label Content="分组依据" VerticalContentAlignment="Center"/>
+                    <DockPanel Grid.Row="0">
+                        <Label BorderThickness="1" BorderBrush="Gray" Content="分组依据" VerticalContentAlignment="Center"/>
                         <ComboBox Text="{Binding GroupKey}" ItemsSource="{Binding GroupKeys}" VerticalContentAlignment="Center"/>
                     </DockPanel>
                     <ScrollViewer Grid.Row="1">
@@ -194,12 +197,12 @@
                                     <ComboBox TabIndex="4" Text="{Binding UserName,UpdateSourceTrigger=PropertyChanged}" DropDownOpened="ComboBox_DropDownOpened"/>
                                 </DockPanel>
                                 <DockPanel Margin="0,0,0,2">
-                                    <Label Content="账号" DockPanel.Dock="Left"/>
+                                    <Label Content="账号" DockPanel.Dock="Left" FontWeight="Bold"/>
                                     <Button Content="复制" Command="{Binding CopyTextCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=local:MainWindow}}" CommandParameter="{Binding LoginName}" DockPanel.Dock="Right"/>
                                     <ComboBox TabIndex="5" Text="{Binding LoginName,UpdateSourceTrigger=PropertyChanged}" DropDownOpened="ComboBox_DropDownOpened"/>
                                 </DockPanel>
                                 <DockPanel Margin="0,0,0,2">
-                                    <Label Content="密码"/>
+                                    <Label Content="密码" FontWeight="Bold"/>
                                     <Button Content="复制" Command="{Binding CopyTextCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=local:MainWindow}}" CommandParameter="{Binding LoginPassword}" DockPanel.Dock="Right"/>
                                     <ComboBox TabIndex="6" Text="{Binding LoginPassword,UpdateSourceTrigger=PropertyChanged}" DropDownOpened="ComboBox_DropDownOpened"/>
                                 </DockPanel>

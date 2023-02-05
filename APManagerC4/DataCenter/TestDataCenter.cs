@@ -1,7 +1,8 @@
 ﻿using APManagerC4.Models;
 using HM.Common;
 using HM.Cryptography;
-using HM.Serialization;
+using HM.Cryptography.Cryptographers;
+using HM.Serialization.BytesSerialization;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -58,7 +59,7 @@ namespace APManagerC4
             public string UpdateTime { get => _updateTime; init => _updateTime = value; }
 
 
-            public static EncryptedAccountItem FromAccountItem(AccountItem item, ITextEncrypter? textEncrypter)
+            public static EncryptedAccountItem FromAccountItem(AccountItem item, ITextCryptographer? textEncrypter)
             {
                 return new EncryptedAccountItem()
                 {
@@ -76,7 +77,7 @@ namespace APManagerC4
                     UpdateTime = EncryptString(item.UpdateTime.ToString(), textEncrypter)
                 };
             }
-            public AccountItem ToAccountItem(ITextEncrypter? textEncrypter)
+            public AccountItem ToAccountItem(ITextCryptographer? textEncrypter)
             {
                 return new AccountItem()
                 {
@@ -94,7 +95,7 @@ namespace APManagerC4
                     UpdateTime = long.TryParse(DecryptString(UpdateTime, textEncrypter), out var updateTime) ? updateTime : 0
                 };
             }
-            public LabelInfo ToLabelInfo(ITextEncrypter? textEncrypter)
+            public LabelInfo ToLabelInfo(ITextCryptographer? textEncrypter)
             {
                 return new LabelInfo()
                 {
@@ -104,7 +105,7 @@ namespace APManagerC4
                 };
             }
 
-            private static string EncryptString(string text, ITextEncrypter? textEncrypter)
+            private static string EncryptString(string text, ITextCryptographer? textEncrypter)
             {
                 if (string.IsNullOrEmpty(text))
                 {
@@ -112,7 +113,7 @@ namespace APManagerC4
                 }
                 return textEncrypter?.Encrypt(text) ?? text;
             }
-            private static string DecryptString(string text, ITextEncrypter? textEncrypter)
+            private static string DecryptString(string text, ITextCryptographer? textEncrypter)
             {
                 if (string.IsNullOrEmpty(text))
                 {
@@ -140,7 +141,7 @@ namespace APManagerC4
         {
             return _data[guid].ToAccountItem(_textEncrypter);
         }
-        public IEnumerable<AccountItem> Retrieve(Predicate<AccountItem>? predicate)
+        public IEnumerable<AccountItem> RetrieveAll(Predicate<AccountItem>? predicate)
         {
             var result = from item in _data.Values
                          let data = item.ToAccountItem(_textEncrypter)
@@ -172,7 +173,7 @@ namespace APManagerC4
 
         public void Initialize(string password)
         {
-            _textEncrypter = new AesTextEncrypter(PreprocessKey(password));
+            _textEncrypter = new AesTextCryptographer(PreprocessKey(password));
             try
             {
 #if BYTES_SERIALIZATION || ALL_SERIALIZATION
@@ -246,7 +247,7 @@ namespace APManagerC4
             var preEncrypter = _textEncrypter;
             var preData = _data;
 
-            _textEncrypter = new AesTextEncrypter(PreprocessKey(password));
+            _textEncrypter = new AesTextCryptographer(PreprocessKey(password));
             _data = new Dictionary<Uid, EncryptedAccountItem>();
 
             foreach (var item in preData.Values)
@@ -260,7 +261,7 @@ namespace APManagerC4
 
         private static readonly string _dataFileName = "data.dat";
         private readonly BytesSerializer _bytesSerializer = new() { TextEncoding = Encoding.ASCII };
-        private ITextEncrypter? _textEncrypter;
+        private ITextCryptographer? _textEncrypter;
         private Dictionary<Uid, EncryptedAccountItem> _data = new();
         private static byte[] PreprocessKey(string password)
         {

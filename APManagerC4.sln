@@ -5,13 +5,13 @@ VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APManagerC4", "APManagerC4\APManagerC4.csproj", "{4F4C1C01-5BFA-4DDE-925E-F12A8CBC1439}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serialization", "..\HMLib\Serialization\Serialization.csproj", "{1265B988-17E1-4083-88EE-5B571DBCEBB8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HM.Collections", "..\HM\HM.Collections\HM.Collections.csproj", "{A64C33C6-0DB4-4B93-B978-E36E5BA66945}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptography", "..\HMLib\Cryptography\Cryptography.csproj", "{D0AADB21-26C2-4ED5-AF2E-7966D816E0DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HM.Common", "..\HM\HM.Common\HM.Common.csproj", "{755F6AEB-DA99-488F-AFE7-7C2453D9173E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "..\HMLib\Common\Common.csproj", "{969DE070-29F5-43F0-AB44-9D1A4A831D04}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HM.Cryptography", "..\HM\HM.Cryptography\HM.Cryptography.csproj", "{CADFA9A4-58C2-479A-8CB0-C807405EB1F7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Collections", "..\HMLib\Collections\Collections.csproj", "{4A09037E-1EF3-4F74-BD96-178B0979C9A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HM.Serialization", "..\HM\HM.Serialization\HM.Serialization.csproj", "{E2BBC55F-5CDB-4FAE-9794-0D21F3EF422F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,22 +23,22 @@ Global
 		{4F4C1C01-5BFA-4DDE-925E-F12A8CBC1439}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F4C1C01-5BFA-4DDE-925E-F12A8CBC1439}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F4C1C01-5BFA-4DDE-925E-F12A8CBC1439}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1265B988-17E1-4083-88EE-5B571DBCEBB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1265B988-17E1-4083-88EE-5B571DBCEBB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1265B988-17E1-4083-88EE-5B571DBCEBB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1265B988-17E1-4083-88EE-5B571DBCEBB8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D0AADB21-26C2-4ED5-AF2E-7966D816E0DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D0AADB21-26C2-4ED5-AF2E-7966D816E0DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D0AADB21-26C2-4ED5-AF2E-7966D816E0DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D0AADB21-26C2-4ED5-AF2E-7966D816E0DB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{969DE070-29F5-43F0-AB44-9D1A4A831D04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{969DE070-29F5-43F0-AB44-9D1A4A831D04}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{969DE070-29F5-43F0-AB44-9D1A4A831D04}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{969DE070-29F5-43F0-AB44-9D1A4A831D04}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4A09037E-1EF3-4F74-BD96-178B0979C9A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4A09037E-1EF3-4F74-BD96-178B0979C9A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4A09037E-1EF3-4F74-BD96-178B0979C9A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4A09037E-1EF3-4F74-BD96-178B0979C9A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A64C33C6-0DB4-4B93-B978-E36E5BA66945}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A64C33C6-0DB4-4B93-B978-E36E5BA66945}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A64C33C6-0DB4-4B93-B978-E36E5BA66945}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A64C33C6-0DB4-4B93-B978-E36E5BA66945}.Release|Any CPU.Build.0 = Release|Any CPU
+		{755F6AEB-DA99-488F-AFE7-7C2453D9173E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{755F6AEB-DA99-488F-AFE7-7C2453D9173E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{755F6AEB-DA99-488F-AFE7-7C2453D9173E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{755F6AEB-DA99-488F-AFE7-7C2453D9173E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CADFA9A4-58C2-479A-8CB0-C807405EB1F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CADFA9A4-58C2-479A-8CB0-C807405EB1F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CADFA9A4-58C2-479A-8CB0-C807405EB1F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CADFA9A4-58C2-479A-8CB0-C807405EB1F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2BBC55F-5CDB-4FAE-9794-0D21F3EF422F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2BBC55F-5CDB-4FAE-9794-0D21F3EF422F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2BBC55F-5CDB-4FAE-9794-0D21F3EF422F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2BBC55F-5CDB-4FAE-9794-0D21F3EF422F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

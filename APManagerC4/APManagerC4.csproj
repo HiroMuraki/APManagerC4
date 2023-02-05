@@ -21,10 +21,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\HMLib\Collections\Collections.csproj" />
-	  <ProjectReference Include="..\..\HMLib\Common\Common.csproj" />
-	  <ProjectReference Include="..\..\HMLib\Cryptography\Cryptography.csproj" />
-	  <ProjectReference Include="..\..\HMLib\Serialization\Serialization.csproj" />
+	  <ProjectReference Include="..\..\HM\HM.Collections\HM.Collections.csproj" />
+	  <ProjectReference Include="..\..\HM\HM.Common\HM.Common.csproj" />
+	  <ProjectReference Include="..\..\HM\HM.Cryptography\HM.Cryptography.csproj" />
+	  <ProjectReference Include="..\..\HM\HM.Serialization\HM.Serialization.csproj" />
 	</ItemGroup>
 
 </Project>

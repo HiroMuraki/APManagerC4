@@ -1,8 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using HM.Common.Asynchronous;
 using HM.Cryptography;
+using HM.Cryptography.Cryptographers;
+using Microsoft.Win32;
+using System;
 using System.ComponentModel;
+using System.IO;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Text.Unicode;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -161,6 +169,32 @@ namespace APManagerC4
         {
             e.CanExecute = true;
         }
+        private void ExportToJsonCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var sfd = new SaveFileDialog()
+            {
+                AddExtension = true,
+                InitialDirectory = Environment.CurrentDirectory,
+                DefaultExt = ".json",
+                FileName = "data"
+            };
+
+            if (sfd.ShowDialog() == true)
+            {
+                var data = Manager.DataCenter.RetrieveAll(_ => true);
+                string jsonString = JsonSerializer.Serialize(data.ToArray(), new JsonSerializerOptions()
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
+                });
+                using var writer = new StreamWriter(sfd.FileName);
+                writer.Write(jsonString);
+            }
+        }
+        private void ExportToJsonCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
 
         private async void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -272,7 +306,7 @@ namespace APManagerC4
                 {
                     _dataCenter.ReEncrypt(pasword);
                     _dataCenter.SaveChanges();
-                    string sPassword = new AesTextEncrypter(GetPasswordKey()).Encrypt(pasword);
+                    string sPassword = new AesTextCryptographer(GetPasswordKey()).Encrypt(pasword);
                     MessageBox.Show($"已保存，请牢记密码凭证：\n{sPassword}", "保存成功", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch
